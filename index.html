@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>KHO XUÂN NIÊN V7.16 - QUẢN LÝ KHO & BÁO CÁO CHUYÊN NGHIỆP</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f4f4f4; font-size: 13px; color: #333; }
         header { background: #b30000; color: white; text-align: center; padding: 10px; }
@@ -91,7 +92,69 @@
             .modal-content { box-shadow: none; margin: 0; width: 100%; max-width: 100%; border: none; }
             .modal-header, .modal-footer, #imP, #btn-final-import, #btn-back-import, #paidAmount, #btn-final-sale { display: none !important; }
             .invoice-box { border: none; }
-        }
+			
+		/* ===== MOBILE APP STYLE ===== */
+        @media (max-width: 768px) {
+			nav {
+                overflow-x: auto;
+            }
+
+            nav button {
+                min-width: 100px;
+                font-size: 14px;
+            }
+
+            body {
+               font-size: 18px;
+               padding: 10px;
+               background: #f5f5f5;
+           }
+
+           /* Ẩn bớt thứ rườm rà desktop */
+           .desktop-only {
+               display: none !important;
+           }
+
+           /* Card kiểu app */
+           .card {
+               background: #fff;
+               border-radius: 12px;
+               padding: 12px;
+               margin-bottom: 10px;
+               box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+           }
+
+           /* Input & button to, dễ bấm */
+           input, select, button {
+               width: 100%;
+               font-size: 18px;
+               padding: 10px;
+               margin-bottom: 8px;
+               border-radius: 8px;
+           }
+
+           button {
+               background: #e53935;
+               color: white;
+               border: none;
+               font-weight: bold;
+           }
+
+           /* Bảng chuyển thành dạng cuộn */
+           table {
+               display: block;
+               overflow-x: auto;
+               white-space: nowrap;
+               background: #fff;
+               border-radius: 10px;
+           }
+
+           /* Header gọn lại */
+           h1, h2 {
+               font-size: 20px;
+               text-align: center;
+           }
+		}
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
