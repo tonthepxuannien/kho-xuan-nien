@@ -1,0 +1,3100 @@
+	<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>KHO XUÂN NIÊN V7.16 - QUẢN LÝ KHO & BÁO CÁO CHUYÊN NGHIỆP</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f4f4f4; font-size: 13px; color: #333; }
+        header { background: #b30000; color: white; text-align: center; padding: 10px; }
+        nav { display: flex; background: #333; position: sticky; top: 0; z-index: 100; }
+        nav button { flex: 1; padding: 12px; border: none; background: #333; color: white; font-weight: bold; cursor: pointer; border-right: 1px solid #444; }
+        nav button.active { background: #b30000; }
+        section { display: none; padding: 15px; }
+        section.active { display: block; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        th { background: #eee; font-weight: bold; font-size: 12px; }
+        input, select, button { padding: 8px; margin: 3px; border: 1px solid #ccc; border-radius: 4px; }
+        .card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-confirm { background: #28a745; color: white; font-weight: bold; padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; }
+        .btn-blue { background: #007bff; color: white; cursor: pointer; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; }
+        .btn-danger { background: #dc3545; color: white; font-weight: bold; padding: 5px 10px; cursor: pointer; border: none; border-radius: 3px; }
+        
+        #previewModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); overflow-y: auto; }
+        .modal-content { background: white; margin: 20px auto; padding: 0; width: 95%; max-width: 1200px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); overflow: hidden; border: none; }
+        
+        .modal-header { background: #b30000; color: white; padding: 15px; font-size: 16px; font-weight: bold; text-align: center; }
+        .modal-body { padding: 20px; line-height: 1.6; }
+        .modal-footer { background: #f9f9f9; padding: 15px; text-align: right; border-top: 1px solid #eee; }
+
+        .simple-warning-card { text-align: center; padding: 30px; }
+        .simple-warning-icon { font-size: 50px; margin-bottom: 15px; display: block; }
+        .simple-warning-text { font-size: 18px; font-weight: bold; color: #555; margin-bottom: 20px; }
+
+        .warning-box { background: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; color: #856404; margin-bottom: 10px; border-radius: 4px; }
+        .danger-box { background: #f8d7da; border-left: 5px solid #dc3545; padding: 15px; color: #721c24; margin-bottom: 15px; border-radius: 4px; }
+        .edit-form-group { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .edit-form-group label { width: 140px; font-weight: bold; color: #555; }
+        .edit-form-group input, .edit-form-group select { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .clickable { color: blue; text-decoration: underline; cursor: pointer; font-weight: bold; }
+        .preview-table th { background: #444; color: white; }
+        .preview-table .col-money { text-align: right; font-weight: bold; color: #b30000; }
+        
+        .history-day-card { border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; overflow: hidden; background: #fff; }
+        .history-day-header { background: #f8f9fa; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid #eee; }
+        .history-day-header:hover { background: #f1f1f1; }
+        .history-day-title { font-weight: bold; font-size: 15px; color: #b30000; }
+        .history-day-body { padding: 15px; display: none; }
+        .history-day-body.open { display: block; }
+        .tag-xuat { background: #eef7ff; color: #007bff; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+        .tag-thu { background: #e6ffed; color: #28a745; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+
+        .invoice-box { padding: 10px; border: 1px solid #eee; }
+        .invoice-header-info { display: flex; justify-content: space-between; border-bottom: 2px solid #b30000; padding-bottom: 10px; margin-bottom: 15px; }
+        .invoice-title { font-size: 20px; font-weight: bold; color: #b30000; text-transform: uppercase; }
+        .invoice-summary { background: #f9f9f9; padding: 10px; border-radius: 5px; margin-top: 15px; }
+        .invoice-summary div { display: flex; justify-content: space-between; padding: 3px 0; }
+        .invoice-summary b { font-size: 1.1em; }
+        .invoice-signature { display: flex; justify-content: space-around; margin-top: 30px; text-align: center; font-style: italic; }
+
+        .loss-warning-card { border: 2px solid #dc3545; border-radius: 10px; overflow: hidden; background: #fff; }
+        .loss-header { background: #dc3545; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
+        .loss-item-row { border-bottom: 1px solid #eee; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .loss-item-name { font-weight: bold; color: #333; flex: 1; }
+        .loss-details { text-align: right; font-size: 0.9em; }
+        .loss-value { color: #dc3545; font-weight: bold; }
+
+        .partner-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin-top: 10px; }
+        .partner-item-card { background: white; border-radius: 8px; padding: 15px; border: 1px solid #eee; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; cursor: pointer; position: relative; overflow: hidden; }
+        .partner-item-card:hover { border-color: #b30000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .partner-name-box { font-weight: bold; font-size: 15px; color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .partner-debt-box { background: #fff5f5; padding: 10px; border-radius: 4px; text-align: center; }
+        .partner-debt-label { font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 3px; }
+        .partner-debt-value { font-size: 18px; font-weight: bold; color: #d63031; }
+        .search-container { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        .row-total-inventory { background: #fff8f8; font-weight: bold; color: #b30000; }
+
+        .report-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .summary-box { background: white; padding: 20px; border-radius: 8px; border-left: 5px solid #b30000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .summary-box.blue { border-left-color: #007bff; }
+        .summary-box.green { border-left-color: #28a745; }
+        .summary-box.orange { border-left-color: #fd7e14; }
+        .summary-label { font-size: 11px; color: #777; text-transform: uppercase; margin-bottom: 5px; }
+        .summary-value { font-size: 18px; font-weight: bold; color: #333; }
+        .report-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            #previewModal, #previewModal * { visibility: visible; }
+            #previewModal { position: absolute; left: 0; top: 0; background: white !important; }
+            .modal-content { box-shadow: none; margin: 0; width: 100%; max-width: 100%; border: none; }
+            .modal-header, .modal-footer, #imP, #btn-final-import, #btn-back-import, #paidAmount, #btn-final-sale { display: none !important; }
+            .invoice-box { border: none; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<header><h2>KHO HÓA ĐƠN XUÂN NIÊN</h2></header>
+
+<nav>
+    <button class="tab active" onclick="openTab('kho',this)">Tồn kho</button>
+    <button class="tab" onclick="openTab('xuat',this)">Xuất bán</button>
+    <button class="tab" onclick="openTab('nhap',this)">Nhập hàng</button>
+    <button class="tab" onclick="openTab('khach',this)">Khách hàng</button>
+    <button class="tab" onclick="openTab('ncc',this)">Nhà cung cấp</button>
+    <button class="tab" onclick="openTab('chiphi',this)">Chi phí</button>
+    <button class="tab" onclick="openTab('baocao',this)">Báo cáo & Lịch sử</button>
+    <button class="tab" onclick="openTab('backup',this)">Hệ thống</button>
+</nav>
+
+<div id="previewModal"><div class="modal-content" id="modalContent"></div></div>
+
+<section id="kho" class="active">
+    <div class="card"><input id="searchProduct" placeholder="Tìm theo mã Item hoặc tên..." onkeyup="renderInventory()" style="width:300px"></div>
+    <table>
+        <thead>
+            <tr>
+                <th>Mã Item</th>
+                <th>Nhóm hàng</th>
+                <th>Tên sản phẩm</th>
+                <th>ĐVT</th>
+                <th>SL Tồn</th>
+                <th>Giá vốn (chưa thuế)</th>
+                <th>Thành tiền (chưa thuế)</th>
+                <th>Thuế %</th>
+                <th>Thành tiền (gồm thuế)</th>
+                <th>Thao tác</th>
+            </tr>
+            <tr class="row-total-inventory">
+                <td colspan="4">TỔNG CỘNG GIÁ TRỊ KHO:</td>
+                <td id="totalStockQty">-</td>
+                <td>-</td>
+                <td id="totalStockPreTax">0</td>
+                <td>-</td>
+                <td id="totalStockWithTax">0</td>
+                <td>-</td>
+            </tr>
+        </thead>
+        <tbody id="inventoryTable"></tbody>
+    </table>
+</section>
+
+<section id="nhap">
+    <div class="card" style="background: #fff8f8; border: 1px solid #ffcccc;">
+        <b>THÔNG TIN PHIẾU NHẬP:</b><br>
+        NCC: <select id="supplierSelect" style="width:200px"></select> 
+        <button onclick="addSupplier()" class="btn-blue" style="padding: 5px 10px;">+ NCC MỚI</button>
+        Ngày: <input type="date" id="importDate">
+    </div>
+    <div class="card">
+        <button onclick="showNewProductModal()" class="btn-blue" style="background: #6f42c1;">+ KHAI BÁO MÃ HÀNG MỚI</button>
+    </div>
+    <div class="card">
+        <table id="multiImportTable">
+            <thead>
+                <tr>
+                    <th style="width: 450px;">Mã Item - Tên hàng - ĐVT - Thuế</th>
+                    <th style="width: 80px;">ĐVT</th>
+                    <th>SL nhập</th>
+                    <th>Giá nhập (chưa thuế)</th>
+                    <th>Thuế %</th>
+                    <th>Xóa</th>
+                </tr>
+            </thead>
+            <tbody id="multiImportBody"></tbody>
+        </table>
+        <datalist id="productDataList"></datalist>
+        <button onclick="addRowImport()" class="btn-blue">+ Thêm dòng nhập hàng</button>
+        <div style="text-align: right;"><button onclick="previewImport()" class="btn-confirm" style="padding: 12px 30px; font-size: 14px;">KIỂM TRA & NHẬP KHO</button></div>
+    </div>
+</section>
+
+<section id="xuat">
+    <div class="card" style="background: #eef7ff; border: 1px solid #b3d7ff;">
+        <b>THÔNG TIN PHIẾU XUẤT BÁN:</b><br>
+        Khách hàng: <select id="saleCustomer" style="width:200px"></select>
+        <button onclick="addCustomer()" class="btn-blue" style="margin-left: 5px; background: #28a745; padding: 3px 10px; font-size: 12px;">
+                + Khai báo mới
+        </button>
+            
+        <span style="margin-left: 15px;">Ngày:</span>
+        <input type="date" id="saleDate">
+    </div>
+    <div class="card">
+        <table id="multiSaleTable">
+            <thead>
+                <tr>
+                    <th style="width: 450px;">Mã Item - Tên hàng (Chọn từ kho)</th>
+                    <th style="width: 80px;">ĐVT</th>
+                    <th>SL xuất</th>
+                    <th>Giá bán (chưa thuế)</th>
+                    <th>Thuế %</th>
+                    <th>Xóa</th>
+                </tr>
+            </thead>
+            <tbody id="multiSaleBody"></tbody>
+        </table>
+        <button onclick="addRowSale()" class="btn-blue" style="background: #007bff;">+ Thêm dòng xuất hàng</button>
+        <div style="text-align: right;"><button onclick="previewSale()" class="btn-confirm" style="padding: 12px 30px; font-size: 14px; background: #007bff;">KIỂM TRA & XUẤT KHO</button></div>
+    </div>
+</section>
+
+<section id="baocao">
+    <div class="report-controls">
+        <div style="font-weight: bold; color: #b30000; margin-right: 10px;">BỘ LỌC THỜI GIAN:</div>
+        <select id="quickDateSelect" onchange="setQuickDate(this.value)" style="width:150px; font-weight:bold; color:#007bff;">
+            <option value="">-- Tùy chỉnh --</option>
+            <option value="today">Hôm nay</option>
+            <option value="yesterday">Hôm qua</option>
+            <option value="thisMonth">Tháng này</option>
+            <option value="lastMonth">Tháng trước</option>
+            <option value="thisYear">Năm nay</option>
+        </select>
+        Từ ngày: <input type="date" id="reportFrom">
+        Đến ngày: <input type="date" id="reportTo">
+        <button class="btn-blue" onclick="renderAll()">🚀 XEM BÁO CÁO</button>
+    </div>
+
+    <div class="report-summary-grid">
+        <div class="summary-box blue">
+            <div class="summary-label">TỔNG DOANH THU (BÁN)</div>
+            <div class="summary-value" id="repSumSale">0</div>
+        </div>
+        <div class="summary-box orange">
+            <div class="summary-label">TỔNG VỐN HÀNG BÁN</div>
+            <div class="summary-value" id="repSumCost">0</div>
+        </div>
+        <div class="summary-box green">
+            <div class="summary-label">LỢI NHUẬN GỘP</div>
+            <div class="summary-value" id="repSumProfit">0</div>
+        </div>
+        <div class="summary-box">
+            <div class="summary-label">TIỀN MẶT THU/CHI</div>
+            <div class="summary-value" id="repSumCash">0</div>
+        </div>
+    </div>
+
+    <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <b>LOẠI BÁO CÁO:</b>
+            <select id="reportType" style="width:250px" onchange="renderAll()">
+                <option value="history">Lịch sử giao dịch chi tiết</option>
+                <option value="profit">Báo cáo Doanh thu - Lãi lỗ</option>
+                <option value="import">Báo cáo Nhập hàng chi tiết</option>
+                <option value="custDebt">Báo cáo Công nợ Khách hàng</option>
+                <option value="suppDebt">Báo cáo Công nợ Nhà cung cấp</option>
+                <option value="tonkho">Báo cáo Tồn kho hiện tại</option>
+            </select>
+        </div>
+        <button class="btn-confirm" onclick="handleExport()">📥 TẢI BÁO CÁO EXCEL CHUYÊN NGHIỆP</button>
+    </div>
+
+    <table id="mainReportTable">
+        <thead id="reportHeader"></thead>
+        <tbody id="reportTableBody"></tbody>
+    </table>
+</section>
+
+<section id="khach">
+    <div class="search-container">
+        <div style="font-size: 20px;">👥</div>
+        <input type="text" id="searchCustInput" placeholder="Tìm kiếm nhanh tên khách hàng...">
+    </div>
+    <div class="partner-grid" id="customerGrid"></div>
+</section>
+
+<section id="ncc">
+    <div class="search-container">
+        <div style="font-size: 20px;">🚚</div>
+        <input type="text" id="searchSuppInput" placeholder="Tìm kiếm nhanh nhà cung cấp..." style="flex:1; font-size:15px; border:none; outline:none;">
+    </div>
+    <div class="partner-grid" id="supplierGrid"></div>
+</section>
+
+<section id="backup">
+    <div class="card">
+        <button onclick="backupData()">Tải Backup</button> <input type="file" onchange="restoreData(event)"> 
+        <hr>
+        <div style="padding: 10px; border: 1px solid #ffcccc; background: #fff5f5; border-radius: 5px;">
+            <p style="color:red; font-weight:bold; margin-top:0">KHU VỰC NGUY HIỂM</p>
+            <button class="btn-danger" style="padding: 10px 20px;" onclick="showSecureClearModal()">XÓA TOÀN BỘ DỮ LIỆU</button>
+        </div>
+    </div>
+</section>
+
+<section id="chiphi">
+    <div class="report-summary-grid" style="margin-bottom: 20px;">
+        <div class="summary-box orange" style="cursor:pointer;" onclick="filterFund('all')">
+            <div class="summary-label">TỔNG QUỸ HỢP NHẤT</div>
+            <div class="summary-value" id="totalFund">0 ₫</div>
+        </div>
+        <div class="summary-box green" style="cursor:pointer;" onclick="filterFund('cash')">
+            <div class="summary-label">TỔNG QUỸ TIỀN MẶT</div>
+            <div class="summary-value" id="totalCash">0 ₫</div>
+        </div>
+        <div class="summary-box blue" style="cursor:pointer;" onclick="filterFund('bank')">
+            <div class="summary-label">TỔNG QUỸ NGÂN HÀNG</div>
+            <div class="summary-value" id="totalBank">0 ₫</div>
+        </div>
+    </div>
+
+    <div id="fundDetailArea" class="card" style="display:none; background: #f9f9f9; border-left: 5px solid #666;">
+        <b id="fundDetailTitle">CHI TIẾT QUỸ</b>
+        <div style="display: flex; gap: 30px; margin-top: 10px;">
+            <div style="color: #28a745;">Thu trong kỳ: <b id="periodIncome">0</b></div>
+            <div style="color: #dc3545;">Chi trong kỳ: <b id="periodExpense">0</b></div>
+            <div style="color: #333;">Tồn quỹ hiện tại: <b id="periodBalance">0</b></div>
+        </div>
+    </div>
+
+    <div class="report-controls" style="justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div>
+            <b>Tìm theo ngày:</b><br>
+            <select id="quickCashflowDate" onchange="setQuickDateCashflow(this.value)" style="padding:8px; font-weight:bold; color:#007bff; margin-right:10px;">
+                <option value="all">Toàn thời gian</option>
+                <option value="today">Hôm nay</option>
+                <option value="yesterday">Hôm qua</option>
+                <option value="thisMonth">Tháng này</option>
+                <option value="lastMonth">Tháng trước</option>
+                <option value="thisYear">Năm nay</option>
+                <option value="lastYear">Năm trước</option>
+            </select>
+        
+            Từ <input type="date" id="cfFrom" onchange="renderCashFlow()"> 
+            Đến <input type="date" id="cfTo" onchange="renderCashFlow()">
+        </div>
+    
+        <div>
+            <button class="btn-confirm" onclick="showAddCashFlowModal('thu')">+ LẬP PHIẾU THU</button>
+            <button class="btn-info" style="background: #17a2b8; color: white;" onclick="showTransferModal()">⇄ CHUYỂN QUỸ</button>
+            <button class="btn-danger" onclick="showAddCashFlowModal('chi')">+ LẬP PHIẾU CHI</button>
+        </div>
+    </div>
+
+    <table id="cashFlowTable">
+        <thead>
+            <tr>
+                <th>Thời gian</th>
+                <th>Mã phiếu</th>
+                <th>Loại (Hạng mục)</th>
+                <th>Nội dung</th>
+                <th>Người nộp/nhận</th>
+                <th>Quỹ</th>
+                <th>Số tiền</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody id="cashFlowBody"></tbody>
+    </table>
+</section>
+
+<script>
+
+let db;
+
+function initDB() {
+    const request = indexedDB.open("TonThepDB", 1);
+
+    request.onupgradeneeded = function(e) {
+        db = e.target.result;
+        db.createObjectStore("data", { keyPath: "id" });
+    };
+
+    request.onsuccess = function(e) {
+        db = e.target.result;
+        console.log("✅ DB OK");
+    };
+}
+
+function saveToDB() {
+    if (!db) return;
+
+    const tx = db.transaction("data", "readwrite");
+    const store = tx.objectStore("data");
+
+    store.put({
+        id: "allData",
+        value: {
+            products,
+            customers,
+            suppliers,
+            categories,
+            history
+        }
+    });
+}
+
+function syncToGoogle() {
+    if (!navigator.onLine) {
+        console.warn("⚠️ Offline - không gửi backup");
+        return;
+    }
+
+    console.log("🔄 Đang tạo backup và gửi lên Google Drive...");
+
+    const payload = {
+        products: products || [],
+        customers: customers || [],
+        suppliers: suppliers || [],
+        categories: categories || [],
+        history: history || [],
+        cashflow: cashflow || [],
+        timestamp: new Date().toISOString(),
+        version: "7.16"
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbx_uaGtpMajiuxV2INF0nrg8qpjANL2fDEC4egnEhkLKNYRdMqWyqF1q4fdjyQeXcuj/exec", {
+        method: "POST",
+        mode: "no-cors",
+        redirect: "follow",
+        headers: {
+            "Content-Type": "text/plain;charset=utf-8"   // Dùng text/plain để tránh lỗi CORS
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.text();
+    })
+    .then(text => {
+        console.log("✅ Backup gửi thành công:", text);
+        
+        // Thông báo đẹp cho người dùng
+        showSimpleWarning(`
+            ✅ <b>Backup đã được lưu lên Google Drive thành công!</b><br><br>
+            📁 Thư mục: <b>Kho Xuan Nien Backups</b><br>
+            🕒 Thời gian: ${new Date().toLocaleString('vi-VN')}<br><br>
+            Bạn có thể mở Google Drive để tải file backup bất cứ lúc nào.
+        `);
+    })
+    .catch(err => {
+        console.error("❌ Lỗi khi gửi backup:", err);
+        
+        // Fallback: Tải file về máy nếu gửi Drive thất bại
+        backupData();
+        
+        showSimpleWarning(`
+            ⚠️ Không gửi được backup lên Drive.<br>
+            Đã tự động tải file backup về máy tính của bạn.<br><br>
+            Vui lòng kiểm tra thư mục Downloads.
+        `);
+    });
+}
+
+let cashflow = JSON.parse(localStorage.getItem("cashflow") || "[]");
+let products = JSON.parse(localStorage.getItem("products")||"[]");
+let customers = JSON.parse(localStorage.getItem("customers")||"[]");
+let suppliers = JSON.parse(localStorage.getItem("suppliers")||"[]");
+let categories = JSON.parse(localStorage.getItem("categories")||'["Chưa phân loại"]');
+let history = JSON.parse(localStorage.getItem("history")||"[]");
+let salePending = [];
+let importPending = [];
+
+// Migrate dữ liệu cũ nếu cần
+if (customers.length > 0 && typeof customers[0] === "string") {
+    customers = customers.map(name => ({name, address:"", phone:"", taxCode:"", idNumber:""}));
+}
+if (suppliers.length > 0 && typeof suppliers[0] === "string") {
+    suppliers = suppliers.map(name => ({name, address:"", phone:"", taxCode:"", idNumber:""}));
+}
+if (products.length === 0) {
+    products = []; 
+}
+
+let searchTimeout;
+document.getElementById("searchProduct").addEventListener("input", function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(renderInventory, 250);
+});
+
+let custSearchTimeout;
+document.getElementById("searchCustInput").addEventListener("input", function() {
+    clearTimeout(custSearchTimeout);
+    custSearchTimeout = setTimeout(renderAll, 300); // chờ 300ms
+});
+
+let suppSearchTimeout;
+document.getElementById("searchSuppInput").addEventListener("input", function() {
+    clearTimeout(suppSearchTimeout);
+    suppSearchTimeout = setTimeout(renderAll, 300); // chờ 300ms sau khi ngừng gõ
+});
+
+const fmt = new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 3 });
+
+function calcDebt(partnerName, type) {
+    return history
+        .filter(h => h.partner === partnerName && !h.isCancelled)
+        .reduce((sum, h) => {
+            let change = 0;
+
+            if (type === 'customer') {
+                if (h.type === 'XUẤT') change = h.amount;
+                else if (h.isPayment) change = -h.amount;
+            }
+
+            else if (type === 'supplier') {
+                if (h.type === 'NHẬP') change = h.amount;
+                else if (h.isPayment) change = -h.amount;
+            }
+
+            return sum + change;
+        }, 0);
+}
+
+function buildDebtCache() {
+    const map = {};
+
+    history.forEach(h => {
+        if (h.isCancelled || !h.partner) return;
+
+        if (!map[h.partner]) {
+            map[h.partner] = {
+                customer: 0,
+                supplier: 0
+            };
+        }
+
+        if (h.type === 'XUẤT') {
+            map[h.partner].customer += h.amount;
+        } 
+        else if (h.type === 'NHẬP') {
+            map[h.partner].supplier += h.amount;
+        } 
+        else if (h.isPayment) {
+            map[h.partner].customer -= h.amount;
+            map[h.partner].supplier -= h.amount;
+        }
+    });
+
+    return map;
+}
+
+function upgradeHistoryId() {
+    let changed = false;
+
+    history.forEach(h => {
+        if (!h.historyId) {
+            h.historyId = Date.now().toString() + Math.random().toString(36).slice(2,5);
+            changed = true;
+        }
+    });
+
+    if (changed && typeof save === "function") {
+        save();
+    }
+}
+
+function fmtDate(dateStr) {
+    if (!dateStr) return "";
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
+
+function formatInput(el) {
+    let value = el.value.replace(/\./g, ''); 
+    if (!isNaN(value) && value !== "") { el.value = Number(value).toLocaleString('vi-VN'); }
+}
+
+function parseVN(val) {
+    if (!val) return 0;
+    if (typeof val !== 'string') val = String(val);
+    let normalized = val.replace(/\./g, '').replace(',', '.');
+    return parseFloat(normalized) || 0;
+}
+
+function recalculateAvgCost(product) {
+    if (!product || !product.itemCode) return;
+
+    // 1. LẤY DỮ LIỆU ĐẦU KỲ (Cực kỳ quan trọng)
+    // Giả sử bạn lưu trong product.openingQty và product.openingPrice
+    // Nếu bạn gọi là tồn ban đầu, hãy thay tên biến tương ứng
+    let totalQty = parseFloat(product.openingQty) || 0; 
+    let totalValue = totalQty * (parseFloat(product.openingPrice) || 0);
+
+    // 2. LỌC CÁC PHIẾU NHẬP HỢP LỆ (Không bị hủy)
+    const importEntries = history.filter(h => 
+        !h.isCancelled && 
+        h.type === 'NHẬP' && 
+        h.itemCode === product.itemCode &&
+        (parseFloat(h.qty) || 0) > 0
+    );
+
+    // 3. CỘNG DỒN GIÁ TRỊ TỪ LỊCH SỬ
+    importEntries.forEach(entry => {
+        const qty = parseFloat(entry.qty) || 0;
+        let unitPrice = 0;
+
+        if (entry.price != null && parseFloat(entry.price) > 0) {
+            unitPrice = parseFloat(entry.price);
+        } else if (entry.amount != null && qty > 0) {
+            unitPrice = parseFloat(entry.amount) / qty;
+        }
+
+        if (qty > 0 && unitPrice > 0) {
+            totalValue += qty * unitPrice;
+            totalQty += qty;
+        }
+    });
+
+    // 4. TÍNH TRUNG BÌNH
+    if (totalQty > 0) {
+        // Bạn nên để nhiều chữ số thập phân hơn (ví dụ 3 chữ số) để chính xác như đề bài
+        product.avg = Math.round((totalValue / totalQty) * 1000) / 1000;
+    }
+    
+    // Cập nhật lại tồn kho tổng (để tránh lỗi lệch số lượng khi tắt mở máy)
+    // Lưu ý: Tồn kho tổng = Đầu kỳ + (Tổng Nhập - Tổng Xuất) - (Tổng Hủy)
+    // Tuy nhiên cách tốt nhất là tính lại product.qty dựa trên history tại đây
+    updateProductQtyFromHistory(product);
+}
+
+// Thêm hàm này để chốt chặn số liệu
+function syncProductQty(product) {
+    let currentQty = parseFloat(product.openingQty) || 0;
+    history.forEach(h => {
+        if (!h.isCancelled && h.itemCode === product.itemCode) {
+            if (h.type === 'NHẬP') currentQty += parseFloat(h.qty);
+            else if (h.type === 'XUẤT') currentQty -= parseFloat(h.qty);
+        }
+    });
+    product.qty = currentQty;
+}
+
+function save() {
+    // Phải có dòng này để lưu giá vốn và tồn kho mới
+    localStorage.setItem("products", JSON.stringify(products)); 
+    localStorage.setItem("history", JSON.stringify(history));
+    localStorage.setItem("customers", JSON.stringify(customers));
+    localStorage.setItem("suppliers", JSON.stringify(suppliers));
+    localStorage.setItem("categories", JSON.stringify(categories));
+    syncToGoogle();
+}
+
+function openTab(id, btn) {
+    document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    btn.classList.add("active");
+    renderAll();
+
+    if (id === "chiphi") {
+        renderCashFlow();
+    }
+}
+
+function closeModal() { document.getElementById("previewModal").style.display = "none"; }
+
+function showSimpleWarning(msg) {
+    let html = `
+    <div class="modal-body" style="background: white; border-radius: 12px; padding: 0;">
+        <div class="simple-warning-card">
+            <span class="simple-warning-icon">⚠️</span>
+            <div class="simple-warning-text">${msg}</div>
+            <button class="btn-confirm" onclick="closeModal()" style="padding: 10px 40px; background: #555;">ĐÃ HIỂU</button>
+        </div>
+    </div>`;
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "400px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function deleteProduct(idx) {
+    let p = products[idx];
+
+    if (p.qty <= 0) {
+        let html = `
+        <div style="border: 2px solid #dc3545; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); animation: fadeIn 0.3s ease;">
+            <div class="modal-header" style="background:#dc3545; color: white; padding: 15px; font-weight: bold; text-align: center;">⚠️ XÁC NHẬN XÓA VĨNH VIỄN</div>
+            <div class="modal-body" style="padding: 20px;">
+                <div style="background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 14px;">
+                    <b>CẢNH BÁO:</b> Sản phẩm sẽ bị xóa khỏi hệ thống và không thể khôi phục!
+                </div>
+                
+                <div style="background:#f8f9fa; padding:15px; border-radius:8px; border: 1px solid #eee; line-height: 1.8; font-size: 14px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between;"><span>Mã Item:</span> <b>${p.itemCode}</b></div>
+                    <div style="display: flex; justify-content: space-between;"><span>Tên hàng:</span> <b>${p.name}</b></div>
+                    <div style="display: flex; justify-content: space-between;"><span>ĐVT:</span> <b>${p.unit || '—'}</b></div>
+                    <div style="display: flex; justify-content: space-between;"><span>Thuế:</span> <b>${p.tax}%</b></div>
+                    <div style="display: flex; justify-content: space-between; color: #2c3e50; border-top: 1px solid #ddd; margin-top: 5px; pt-5"><span>Giá vốn:</span> <b>${fmt.format(p.avg)} đ</b></div>
+                </div>
+
+                <div class="edit-form-group">
+                    <label style="display:block; margin-bottom: 8px; font-weight: bold; color: #4a5568;">Mật khẩu xác nhận:</label>
+                    <input type="password" id="deleteProductPass" placeholder="••••••••" autofocus 
+                        style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; text-align: center; font-size: 16px;"
+                        onkeydown="if(event.key==='Enter') confirmDeleteProduct(${idx})">
+                </div>
+            </div>
+            <div class="modal-footer" style="background: #f8f9fa; padding: 15px; display: flex; gap: 10px;">
+                <button onclick="closeModal()" style="flex: 1; padding: 12px; border: 1px solid #ccc; background: white; border-radius: 8px; cursor: pointer; font-weight: bold; color: #718096;">HỦY</button>
+                <button class="btn-danger" onclick="confirmDeleteProduct(${idx})" style="flex: 1; padding: 12px; border: none; background: #dc3545; color: white; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);">XÓA SẢN PHẨM</button>
+            </div>
+        </div>`;
+        document.getElementById("modalContent").innerHTML = html;
+        document.getElementById("modalContent").style.maxWidth = "450px";
+        document.getElementById("modalContent").style.background = "transparent";
+        document.getElementById("previewModal").style.display = "block";
+        return;
+    }
+
+    // Trường hợp còn tồn kho (Khung viền màu vàng/cam cảnh báo)
+    let html = `
+    <div style="border: 2px solid #f6ad55; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); background: white; animation: fadeIn 0.3s ease;">
+        <div style="background: #f6ad55; color: white; padding: 15px; font-weight: bold; text-align: center; font-size: 16px;">
+            <span style="font-size:20px;">🔒</span> KHÔNG THỂ XÓA SẢN PHẨM
+        </div>
+        <div style="padding: 30px; text-align: center;">
+            <div style="font-size: 50px; margin-bottom: 15px;">⚠️</div>
+            <div style="font-size: 18px; font-weight: bold; color: #2d3748; margin-bottom: 10px;">Sản phẩm vẫn còn tồn kho!</div>
+            
+            <div style="background: #fffaf0; border: 1px solid #feebc8; padding: 15px; border-radius: 10px; text-align: left; margin-bottom: 20px; font-size: 14px;">
+                <b>Mã Item:</b> ${p.itemCode}<br>
+                <b>Tên hàng:</b> ${p.name}<br>
+                <b>Tồn hiện tại:</b> <span style="color: #c05621; font-weight: bold;">${fmt.format(p.qty)} ${p.unit || '—'}</span>
+            </div>
+
+            <p style="font-size: 13px; color: #718096; line-height: 1.6; margin-bottom: 25px;">
+                Hệ thống không cho phép xóa sản phẩm còn tồn kho để đảm bảo tính chính xác của báo cáo.<br>
+                <b>Hướng dẫn:</b> Hãy xuất hết hàng trước khi xóa.
+            </p>
+
+            <button class="btn-confirm" style="width: 100%; padding: 12px; background: #2d3748; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="closeModal()">
+                ĐÃ HIỂU
+            </button>
+        </div>
+    </div>`;
+
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "420px";
+    document.getElementById("modalContent").style.background = "transparent";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function confirmDeleteProduct(idx) {
+    let passInput = document.getElementById("deleteProductPass");
+    let pass = passInput.value;
+    
+    if (pass === "123456789") {
+        let pName = products[idx].name;
+        products.splice(idx, 1);
+        if (typeof save === "function") save();
+        
+        document.getElementById("modalContent").innerHTML = `
+            <div style="padding: 40px; text-align: center; background: white; border-radius: 15px; border: 2px solid #edf2f7;">
+                <div style="font-size: 50px; color: #cbd5e0; margin-bottom: 15px;">🗑️</div>
+                <div style="font-size: 16px; font-weight: bold; color: #4a5568;">Đã xóa xong: ${pName}</div>
+            </div>
+        `;
+        
+        setTimeout(() => {
+            closeModal();
+            renderInventory();
+            if (typeof renderAll === "function") renderAll();
+        }, 1000);
+    } else {
+        passInput.style.borderColor = "#e53e3e";
+        passInput.value = "";
+        passInput.placeholder = "Sai mật khẩu!";
+        passInput.focus();
+    }
+}
+
+function editPartnerFullInfo(name, isSupplier = false) {
+    const arrayRef = isSupplier ? suppliers : customers;
+    const partner = arrayRef.find(p => p.name === name);
+    if (!partner) return alert("Không tìm thấy đối tác!");
+
+    let html = `
+    <div class="modal-header" style="background: ${isSupplier ? '#b30000' : '#007bff'}">
+        CHỈNH SỬA THÔNG TIN ${isSupplier ? 'NHÀ CUNG CẤP' : 'KHÁCH HÀNG'}
+    </div>
+    <div class="modal-body">
+        <div class="edit-form-group"><label>Tên:</label><input type="text" id="editName" value="${partner.name}" autofocus></div>
+        <div class="edit-form-group"><label>Địa chỉ:</label><input type="text" id="editAddress" value="${partner.address || ''}"></div>
+        <div class="edit-form-group"><label>Số điện thoại:</label><input type="text" id="editPhone" value="${partner.phone || ''}"></div>
+        <div class="edit-form-group"><label>Mã số thuế:</label><input type="text" id="editTaxCode" value="${partner.taxCode || ''}"></div>
+        <div class="edit-form-group"><label>Số CCCD:</label><input type="text" id="editIdNumber" value="${partner.idNumber || ''}"></div>
+        <div class="warning-box" style="margin-top:20px;">
+            <b>Lưu ý:</b> Nếu thay đổi tên, tất cả lịch sử giao dịch & công nợ sẽ được cập nhật theo tên mới.
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-confirm" onclick="savePartnerFullInfo('${name}', ${isSupplier})">LƯU THAY ĐỔI</button>
+        <button onclick="closeModal()">HỦY</button>
+    </div>`;
+
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "600px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function savePartnerFullInfo(oldName, isSupplier) {
+    const newName = document.getElementById("editName").value.trim();
+    if (!newName) return alert("Tên không được để trống!");
+
+    const arrayRef = isSupplier ? suppliers : customers;
+
+    if (arrayRef.some(p => p.name === newName && p.name !== oldName)) {
+        return alert("Tên này đã tồn tại trong danh sách!");
+    }
+
+    const idx = arrayRef.findIndex(p => p.name === oldName);
+    if (idx !== -1) {
+        arrayRef[idx].name = newName;
+        arrayRef[idx].address = document.getElementById("editAddress").value.trim();
+        arrayRef[idx].phone = document.getElementById("editPhone").value.trim();
+        arrayRef[idx].taxCode = document.getElementById("editTaxCode").value.trim();
+        arrayRef[idx].idNumber = document.getElementById("editIdNumber").value.trim();
+    }
+
+    if (newName !== oldName) {
+        history.forEach(h => {
+            if (h.partner === oldName) h.partner = newName;
+        });
+    }
+
+    save();
+    closeModal();
+
+    if (document.querySelector(".modal-header")?.innerText.includes(oldName)) {
+        viewPartnerLog(newName);
+    }
+}
+
+function viewPartnerLog(name) {
+    let isSupp = suppliers.some(s => s.name === name);
+    let partner = (isSupp ? suppliers : customers).find(p => p.name === name) || {name};
+
+    // 1. SẮP XẾP LỊCH SỬ CHUẨN: Theo Ngày và Giờ (để tính nợ lũy kế đúng trình tự thời gian)
+    let logs = history.filter(h => h.partner === name)
+                      .sort((a, b) => {
+                          let dtA = new Date(a.date + ' ' + (a.time || '00:00'));
+                          let dtB = new Date(b.date + ' ' + (b.time || '00:00'));
+                          return dtA - dtB; // Sắp xếp từ cũ đến mới để tính nợ lũy kế
+                      });
+
+    let grouped = {};
+    let runningDebt = 0;
+
+    // 2. TÍNH NỢ LŨY KẾ (Tính từ cũ đến mới)
+    logs.forEach(l => {
+        if (!l.isCancelled) {
+            let change = (l.type === 'XUẤT' || l.type === 'NHẬP') ? l.amount : (l.isPayment ? -l.amount : 0);
+            runningDebt += change;
+        }
+        l.currentAccumulated = runningDebt;
+        if (!grouped[l.date]) grouped[l.date] = [];
+        grouped[l.date].push({ ...l });
+    });
+
+    // 3. ĐẢO NGƯỢC: Ngày mới nhất lên đầu, và trong mỗi ngày Giờ mới nhất cũng lên đầu
+    let sortedDates = Object.keys(grouped).sort().reverse();
+    
+    // Đảo ngược danh sách giao dịch trong từng ngày để cái mới nhất ở trên cùng
+    sortedDates.forEach(date => {
+        grouped[date].reverse(); 
+    });
+
+    const today = new Date().toLocaleDateString('sv-SE');
+
+    let html = `
+    <div style="display: flex; flex-direction: column; height: 88vh;">
+        <div style="flex-shrink: 0;">
+            <div class="modal-header" style="background:${isSupp ? '#b30000' : '#007bff'}; margin:0;">
+                ${isSupp ? 'NHÀ CUNG CẤP' : 'KHÁCH HÀNG'}: ${name}
+                <button class="btn-blue" style="float:right; margin:-3px 0 0 15px; padding:6px 12px;" 
+                        onclick="editPartnerFullInfo('${name}', ${isSupp})">✏️ Sửa thông tin</button>
+            </div>
+            
+            <div style="background:#f8f9fa; padding:12px; border-bottom:1px solid #ddd; font-size:14px; line-height:1.4; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    👤 <b>${partner.name}</b> | 📞 ${partner.phone || 'N/A'} <br>
+                    <small style="color:#666;">📍 ${partner.address || 'Không có địa chỉ'}</small>
+                </div>
+                <div style="text-align:right; background:#fff; padding:5px 15px; border-radius:5px; border:1px solid #ddd;">
+                    <small>Dư nợ hiện tại:</small><br>
+                    <b style="color:#b30000; font-size:18px;">${fmt.format(runningDebt)} đ</b>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-body" style="flex: 1; overflow-y: auto; background:#f0f2f5; padding:15px;">
+            <div class="card" style="border: 2px solid #28a745; background: #f8fff9; margin-bottom: 25px; flex-shrink:0;">
+                <b style="color: #28a745; display: block; margin-bottom: 10px; font-size: 15px;">💰 ${isSupp ? 'THANH TOÁN TRẢ NỢ NCC' : 'THU NỢ KHÁCH HÀNG'}:</b>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                    <input type="date" id="innerPayDate" value="${today}" style="padding:5px;">
+                    <select id="innerPayMethod" style="padding:5px;">
+                        <option value="Tiền mặt">Tiền mặt</option>
+                        <option value="Chuyển khoản">Chuyển khoản</option>
+                    </select>
+                    <input type="text" id="innerPayMoney" placeholder="Số tiền..." oninput="formatInput(this)" style="width: 150px; font-weight: bold; padding:5px;">
+                    <button onclick="partnerPayDebtInner('${name}', ${isSupp})" class="btn-confirm" style="margin:0">XÁC NHẬN</button>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 10px; font-weight: bold; color: #555;">LỊCH SỬ GIAO DỊCH CHI TIẾT:</div>
+            
+            ${sortedDates.length === 0 ? '<p style="text-align:center">Chưa có giao dịch nào.</p>' : ''}
+            ${sortedDates.map(date => {
+                let dayLogs = grouped[date];
+                let dayTotalXuat = dayLogs.filter(l => !l.isCancelled && (l.type === 'XUẤT' || l.type === 'NHẬP')).reduce((s,i) => s + i.amount, 0);
+                let dayTotalThu = dayLogs.filter(l => !l.isCancelled && l.isPayment).reduce((s,i) => s + i.amount, 0);
+                
+                // Lấy nợ cuối ngày từ giao dịch đầu tiên sau khi đã reverse (vì nó là đơn cuối cùng trong ngày)
+                let eodDebt = dayLogs[0]?.currentAccumulated || 0;
+
+                return `
+                <div class="history-day-card">
+                    <div class="history-day-header open" onclick="this.nextElementSibling.classList.toggle('open')">
+                        <div class="history-day-title">📅 Ngày ${fmtDate(date)}</div>
+                        <div>
+                            <span class="tag-xuat">+${fmt.format(dayTotalXuat)}</span>
+                            <span class="tag-thu">-${fmt.format(dayTotalThu)}</span>
+                            <span style="margin-left:15px; font-weight:bold; color:#d63031">Nợ: ${fmt.format(eodDebt)}</span>
+                        </div>
+                    </div>
+                    <div class="history-day-body open">
+                        <table style="box-shadow:none; margin-bottom:10px; border: 1px solid #eee;">
+                            <thead style="background:#f9f9f9; position:sticky; top:0;">
+                                <tr><th>Giờ</th><th>Số phiếu / Nội dung</th><th>Giá trị</th><th>Nợ lũy kế</th><th>Thao tác</th></tr>
+                            </thead>
+                            <tbody>
+                                ${dayLogs.map(l => {
+                                    let targetId = l.historyId || history.findIndex(h => h.date === l.date && h.partner === l.partner && h.amount === l.amount && h.time === l.time);
+                                    const isVoid = l.isCancelled === true;
+                                    const styleLine = isVoid ? 'text-decoration:line-through; color:#aaa; background:#f9f9f9' : '';
+
+                                    return `
+                                    <tr style="${styleLine}">
+                                        <td>${l.time || '--:--'}</td>
+                                        <td style="text-align:left">${l.invoiceNo || l.name || ''} ${isVoid ? '<b style="color:red">(ĐÃ HỦY)</b>' : ''}</td>
+                                        <td style="text-align:right; font-weight:bold">${fmt.format(l.amount)}</td>
+                                        <td style="text-align:right; color:#b30000; font-weight:bold">${fmt.format(l.currentAccumulated)}</td>
+                                        <td>
+                                            ${isVoid ? '---' : `<button class="btn-danger" style="padding:2px 8px;" onclick="deleteHistoryItem('${targetId}', true, '${name}')">Hủy</button>`}
+                                        </td>
+                                    </tr>`;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>`;
+            }).join('')}
+        </div>
+
+        <div class="modal-footer" style="flex-shrink: 0; background:#f1f1f1; border-top:1px solid #ddd; padding:15px; text-align:right;">
+            <button class="btn-confirm" onclick="closeModal()" style="min-width:150px; background:#6c757d; font-size:16px;">ĐÓNG CỬA SỔ</button>
+        </div>
+    </div>`;
+
+    const modalContent = document.getElementById("modalContent");
+    modalContent.innerHTML = html;
+    modalContent.style.maxWidth = "1000px";
+    modalContent.style.width = "95%";
+    modalContent.style.padding = "0";
+    modalContent.style.overflow = "hidden";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function saveCashflow() {
+    localStorage.setItem("cashflow", JSON.stringify(cashflow));
+    renderCashFlow();  // tự động cập nhật khi lưu
+}
+
+// Tính số dư hiện tại của từng quỹ
+function calculateBalances() {
+    let cash = 0;
+    let bank = 0;
+
+    cashflow.forEach(item => {
+        let amount = item.amount;
+        if (item.type === "income") {
+            if (item.account === "cash") cash += amount;
+            else bank += amount;
+        }
+        else if (item.type === "expense") {
+            if (item.account === "cash") cash -= amount;
+            else bank -= amount;
+        }
+        else if (item.type === "transfer") {
+            if (item.from === "cash") {
+                cash -= amount;
+                bank += amount;
+            } else {
+                bank -= amount;
+                cash += amount;
+            }
+        }
+    });
+
+    return { cash, bank };
+}
+
+function saveCashFlowItem(mode) {
+    const date = document.getElementById('cfDate').value;
+    const amount = parseFloat(document.getElementById('cfAmount').value);
+    const note = document.getElementById('cfNote').value;
+
+    const fund = document.getElementById('cfAccount').value;
+
+    if (!date || isNaN(amount) || amount <= 0) {
+        alert("Vui lòng nhập đầy đủ ngày và số tiền hợp lệ!");
+        return;
+    }
+
+    let typeValue = mode; 
+    if (mode === 'income') typeValue = 'thu';
+    if (mode === 'expense') typeValue = 'chi';
+
+    const record = {
+        id: 'CF' + Date.now().toString(36) + Math.random().toString(36).substr(2,5),
+        date: date,
+        amount: amount,
+        note: note,
+
+        fund: fund,
+        account: undefined,
+
+        type: typeValue,
+        timestamp: new Date().toISOString()
+    };
+
+    cashflow.push(record);
+    localStorage.setItem('cashflow', JSON.stringify(cashflow));
+    
+    closeModal();
+    renderCashFlow(); 
+}
+
+// Khởi tạo danh mục nếu chưa có
+let cfCategories = JSON.parse(localStorage.getItem("cfCategories") || '{"thu":["Thu lãi tiền gửi","Thu khác"],"chi":["Chi lương","Chi mặt bằng","Chi điện nước"]}');
+let currentFundFilter = 'all';
+
+function renderCashFlow() {
+    const from = document.getElementById("reportFrom")?.value;
+    const to = document.getElementById("reportTo")?.value;
+    
+    // Lọc dữ liệu theo khoảng thời gian
+    let filtered = cashflow.filter(item => {
+        if (!from && !to) return true;
+        if (from && item.date < from) return false;
+        if (to && item.date > to) return false;
+        return true;
+    });
+
+    // Sắp xếp mới nhất lên trên
+    filtered.sort((a, b) => new Date(b.fullDate || b.date) - new Date(a.fullDate || a.date));
+
+    // ====================== TÍNH TỔNG QUỸ ======================
+    let cash = 0;
+    let bank = 0;
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    filtered.forEach(item => {
+        const amt = parseFloat(item.amount) || 0;
+
+        // ✅ FIX CHUẨN FIELD (fallback cho dữ liệu cũ)
+        const fund = item.fund || item.account || 'cash';
+
+        if (item.type === 'thu') {
+            if (fund === 'cash') cash += amt;
+            else bank += amt;
+            totalIncome += amt;
+        } 
+        else if (item.type === 'chi') {
+            if (fund === 'cash') cash -= amt;
+            else bank -= amt;
+            totalExpense += amt;
+        } 
+        else if (item.type === 'transfer' || item.category === "Chuyển quỹ") {
+            // Không tính vào tổng hợp nhất
+        }
+    });
+
+    // Hiển thị tổng quỹ
+    document.getElementById("totalCash").innerText = fmt.format(cash) + " ₫";
+    document.getElementById("totalBank").innerText = fmt.format(bank) + " ₫";
+    document.getElementById("totalFund").innerText = fmt.format(cash + bank) + " ₫";
+
+    // ====================== HIỂN THỊ BẢNG ======================
+    const tbody = document.getElementById("cashFlowBody");
+    tbody.innerHTML = filtered.map((item, idx) => {
+
+        // ✅ FIX CHUẨN FIELD (hiển thị)
+        const fund = item.fund || item.account || 'cash';
+
+        return `
+        <tr style="color: ${item.type === 'thu' ? '#28a745' : '#dc3545'}">
+            <td>${item.time || ''} ${fmtDate(item.date)}</td>
+            <td><b>${item.id}</b></td>
+            <td>${item.category || '—'}</td>
+            <td style="text-align:left; max-width:220px;">${item.note || '—'}</td>
+            <td>${item.person || '—'}</td>
+            <td>${fund === 'cash' ? 'Tiền mặt' : 'Ngân hàng'}</td>
+            <td style="font-weight:bold">${item.type === 'thu' ? '+' : '-'}${fmt.format(item.amount)}</td>
+            <td><button class="btn-danger" onclick="deleteCashflowById('${item.id}')">Xóa</button></td>
+        </tr>`;
+    }).join('');
+
+    // Cập nhật chi tiết quỹ
+    updateFundDetails(filtered);
+}
+
+// Bấm vào quỹ để xem chi tiết (Stage 2, 3)
+function filterFund(fund) {
+    currentFundFilter = fund;
+    const area = document.getElementById("fundDetailArea");
+    area.style.display = fund === 'all' ? 'none' : 'block';
+    document.getElementById("fundDetailTitle").innerText = fund === 'cash' ? "CHI TIẾT QUỸ TIỀN MẶT" : "CHI TIẾT QUỸ NGÂN HÀNG";
+    renderCashFlow();
+}
+
+function updateFundDetails(data) {
+    if (currentFundFilter === 'all') return;
+    const items = data.filter(x => x.fund === currentFundFilter);
+    const thu = items.filter(x => x.type === 'thu').reduce((sum, x) => sum + x.amount, 0);
+    const chi = items.filter(x => x.type === 'chi').reduce((sum, x) => sum + x.amount, 0);
+    
+    document.getElementById("periodIncome").innerText = fmt.format(thu) + " ₫";
+    document.getElementById("periodExpense").innerText = fmt.format(chi) + " ₫";
+    
+    // Tính tồn quỹ hiện tại (tổng lịch sử không phụ thuộc lọc ngày)
+    let totalBal = 0;
+    cashflow.filter(x => x.fund === currentFundFilter).forEach(x => {
+        x.type === 'thu' ? totalBal += x.amount : totalBal -= x.amount;
+    });
+    document.getElementById("periodBalance").innerText = fmt.format(totalBal) + " ₫";
+}
+
+// Lập phiếu thu/chi (Stage 6)
+function showAddCashFlowModal(type) {
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    const timeStr = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+
+    const prefix = type === 'thu' ? 'PT' : 'PC';
+
+    // ✅ TẠO ID CHUẨN – tránh trùng tuyệt đối
+    const id = prefix + "_" + Date.now().toString() + Math.random().toString(16).slice(2,6);
+
+    let html = `
+    <div class="modal-header" style="background:${type==='thu'?'#28a745':'#dc3545'}">LẬP PHIẾU ${type.toUpperCase()}</div>
+    <div class="modal-body">
+        <div class="edit-form-group"><label>Mã phiếu:</label><input type="text" id="newCfId" value="${id}" readonly></div>
+        
+        <div class="edit-form-group">
+            <label>Loại ${type}:</label>
+            <select id="newCfCat">${cfCategories[type].map(c => `<option value="${c}">${c}</option>`).join('')}</select>
+            <button onclick="addNewCfCat('${type}')" style="padding:5px 8px;">+</button>
+        </div>
+        
+        <div class="edit-form-group">
+            <label>Nội dung:</label>
+            <input type="text" id="newCfNote" placeholder="Nhập nội dung" style="flex:1">
+        </div>
+        
+        <div class="edit-form-group"><label>Người ${type==='thu'?'nộp':'nhận'}:</label><input type="text" id="newCfPerson"></div>
+        <div class="edit-form-group"><label>Số tiền:</label><input type="text" id="newCfAmt" oninput="formatInput(this)"></div>
+
+        <!-- ✅ CHUẨN FIELD fund -->
+        <div class="edit-form-group"><label>Quỹ:</label>
+            <select id="newCfFund">
+                <option value="cash">Tiền mặt</option>
+                <option value="bank">Ngân hàng</option>
+            </select>
+        </div>
+
+        <div class="edit-form-group"><label>Thời gian:</label><input type="text" value="${timeStr} ${fmtDate(dateStr)}" readonly></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-confirm" onclick="saveNewCf('${type}', '${dateStr}', '${timeStr}')">LƯU PHIẾU</button>
+        <button onclick="closeModal()">HỦY</button>
+    </div>`;
+    
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function saveNewCf(type, date, time) {
+    const amount = parseVN(document.getElementById("newCfAmt").value);
+    if (amount <= 0) return alert("Vui lòng nhập số tiền!");
+
+    const fundValue = document.getElementById("newCfFund").value;
+
+    const newItem = {
+        id: 'CF' + Date.now().toString(36) + Math.random().toString(36).substr(2,5),
+
+        type: type,
+        category: document.getElementById("newCfCat").value,
+        note: document.getElementById("newCfNote").value.trim(),
+        person: document.getElementById("newCfPerson").value.trim(),
+        amount: amount,
+
+        fund: fundValue,
+        account: undefined,
+
+        date: date,
+        time: time,
+        fullDate: new Date().toISOString()
+    };
+
+    cashflow.push(newItem);
+    localStorage.setItem("cashflow", JSON.stringify(cashflow));
+
+    closeModal();
+    renderCashFlow();
+}
+
+// 1. Hiển thị Form chuyển quỹ
+function showTransferModal() {
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    const timeStr = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+
+    let html = `
+    <div class="modal-header" style="background:#17a2b8">CHUYỂN QUỸ NỘI BỘ</div>
+    <div class="modal-body">
+        <div class="edit-form-group">
+            <label>Nguồn chuyển:</label>
+            <select id="transferFrom" onchange="toggleTransferTarget()">
+                <option value="cash">Tiền mặt</option>
+                <option value="bank">Ngân hàng</option>
+            </select>
+        </div>
+        <div class="edit-form-group">
+            <label>Đích đến:</label>
+            <select id="transferTo" disabled>
+                <option value="bank">Ngân hàng</option>
+                <option value="cash">Tiền mặt</option>
+            </select>
+        </div>
+        <div class="edit-form-group">
+            <label>Số tiền chuyển:</label>
+            <input type="text" id="transferAmt" oninput="formatInput(this)" placeholder="0">
+        </div>
+        <div class="edit-form-group">
+            <label>Ghi chú:</label>
+            <input type="text" id="transferNote" value="Chuyển quỹ nội bộ">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-confirm" onclick="executeTransfer('${dateStr}', '${timeStr}')">XÁC NHẬN CHUYỂN</button>
+        <button onclick="closeModal()">HỦY</button>
+    </div>`;
+    
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("previewModal").style.display = "block";
+}
+
+// 2. Tự động đổi mục tiêu khi chọn nguồn (Nếu nguồn là Tiền mặt thì Đích phải là Ngân hàng)
+function toggleTransferTarget() {
+    const from = document.getElementById("transferFrom").value;
+    const toSelect = document.getElementById("transferTo");
+    toSelect.value = (from === 'cash') ? 'bank' : 'cash';
+}
+
+// 3. Thực thi nghiệp vụ chuyển quỹ
+function executeTransfer(date, time) {
+    const amount = parseVN(document.getElementById("transferAmt").value);
+    const from = document.getElementById("transferFrom").value;
+    const to = from === 'cash' ? 'bank' : 'cash';
+    const note = document.getElementById("transferNote").value;
+
+    if (!amount || amount <= 0) return alert("Vui lòng nhập số tiền hợp lệ!");
+
+    const timestamp = new Date().getTime().toString().slice(-4);
+    
+    // Tạo Phiếu Chi từ quỹ nguồn
+    const outTicket = {
+        id: "PC-CHUYEN-" + timestamp,
+        type: 'chi',
+        category: "Chuyển quỹ",
+        person: note,
+        amount: amount,
+        fund: from,
+        date: date,
+        time: time,
+        fullDate: new Date().toISOString()
+    };
+
+    // Tạo Phiếu Thu vào quỹ đích
+    const inTicket = {
+        id: "PT-CHUYEN-" + timestamp,
+        type: 'thu',
+        category: "Nhận chuyển quỹ",
+        person: note,
+        amount: amount,
+        fund: to,
+        date: date,
+        time: time,
+        fullDate: new Date().toISOString()
+    };
+
+    // Lưu cả 2 phiếu vào mảng cashflow
+    cashflow.push(outTicket, inTicket);
+    localStorage.setItem("cashflow", JSON.stringify(cashflow));
+    
+    alert(`Đã chuyển ${fmt.format(amount)}đ từ ${from === 'cash' ? 'Tiền mặt' : 'Ngân hàng'} sang ${to === 'cash' ? 'Tiền mặt' : 'Ngân hàng'}`);
+    closeModal();
+    renderCashFlow();
+}
+
+function addNewCfCat(type) {
+    const name = prompt("Nhập tên loại " + type + " mới:");
+    if (name) {
+        cfCategories[type].push(name);
+        localStorage.setItem("cfCategories", JSON.stringify(cfCategories));
+        showAddCashFlowModal(type); // Re-render modal
+    }
+}
+
+function deleteCashflow(idx) {
+    let item = cashflow[idx];
+    let typeText = item.type === 'thu' ? 'PHIẾU THU' : (item.type === 'chi' ? 'PHIẾU CHI' : 'CHUYỂN QUỸ');
+    
+    // Tạo giao diện xác nhận xóa chuyên nghiệp
+    let html = `
+    <div class="modal-header" style="background:#dc3545">XÁC NHẬN XÓA GIAO DỊCH</div>
+    <div class="modal-body">
+        <div class="danger-box">
+            <b>CẢNH BÁO:</b> Giao dịch này sẽ bị xóa vĩnh viễn và ảnh hưởng đến số dư quỹ!
+        </div>
+        <div style="background:#f9f9f9; padding:12px; border-radius:6px; margin:15px 0;">
+            <b>Loại:</b> ${typeText}<br>
+            <b>Hạng mục:</b> ${item.category || '—'}<br>
+            <b>Nội dung chi tiết:</b> ${item.note || 'Không có'}<br>
+            <b>Người nhận:</b> ${item.person || '—'}<br>
+            <b>Số tiền:</b> <span style="color:#dc3545; font-weight:bold">${fmt.format(item.amount)} đ</span><br>
+            <b>Ngày:</b> ${fmtDate(item.date)}
+        </div>
+        <div class="edit-form-group">
+            <label>Mật khẩu xác nhận:</label>
+            <input type="password" id="deleteCFPass" placeholder="Nhập mật khẩu..." autofocus 
+                   onkeydown="if(event.key==='Enter') confirmDeleteCashflow(${idx})">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-danger" onclick="confirmDeleteCashflow(${idx})">XÁC NHẬN XÓA</button>
+        <button onclick="closeModal()">HỦY</button>
+    </div>`;
+    
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "480px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function deleteCashflowById(id) {
+    // Tìm vị trí thật trong mảng cashflow gốc (không phải filtered)
+    const idx = cashflow.findIndex(item => String(item.id) === String(id));
+    
+    if (idx === -1) {
+        alert("❌ Không tìm thấy giao dịch để xóa!");
+        return;
+    }
+    
+    // Gọi lại hàm modal xác nhận xóa (đã có sẵn)
+    deleteCashflow(idx);
+}
+
+function confirmDeleteCashflow(idx) {
+    let pass = document.getElementById("deleteCFPass").value;
+    if (pass === "123456789") { // Sử dụng mật khẩu mặc định giống các phần khác của bạn
+        cashflow.splice(idx, 1);
+        localStorage.setItem("cashflow", JSON.stringify(cashflow));
+        renderCashFlow(); // Vẽ lại bảng sau khi xóa
+        closeModal();
+    } else {
+        alert("Mật khẩu không đúng!");
+    }
+}
+
+function partnerPayDebtInner(name, isSupp) {
+    let amount = parseVN(document.getElementById("innerPayMoney").value);
+    let date = document.getElementById("innerPayDate").value;
+    let method = document.getElementById("innerPayMethod").value;
+    if(amount <= 0) return alert("Vui lòng nhập số tiền hợp lệ");
+    if(!date) return alert("Vui lòng chọn ngày");
+    
+    let type = isSupp ? 'TRA_NO' : 'THU_NO';
+    let label = isSupp ? 'Trả nợ NCC' : 'Thu nợ khách hàng';
+
+    history.push({ 
+        historyId: Date.now().toString() + Math.random().toString(16).slice(2),
+        date, 
+        time: new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}),
+        partner: name, 
+        type: type, 
+        name: `${label} (${method})`, 
+        amount: amount, 
+        method: method,
+        isPayment: true,
+        historyId: "PAY-" + Date.now()     // ← Thêm dòng này
+    });
+    save();
+    viewPartnerLog(name);
+}
+
+function editProductFull(idx) {
+    let p = products[idx];
+    let html = `<div class="modal-header">CHỈNH SỬA THÔNG TIN MẶT HÀNG</div>
+    <div class="modal-body">
+        <div class="edit-form-group"><label>Mã Item:</label><input type="text" id="editCode" value="${p.itemCode}" readonly style="background:#f0f0f0"></div>
+        <div class="edit-form-group"><label>Nhóm hàng:</label>
+            <select id="editCategory" style="flex:1">${categories.map(c => `<option value="${c}" ${p.category === c ? 'selected' : ''}>${c}</option>`).join('')}</select>
+        </div>
+        <div class="edit-form-group"><label>Tên hàng:</label><input type="text" id="editName" value="${p.name}"></div>
+        <div class="edit-form-group"><label>Đơn vị tính:</label><input type="text" id="editUnit" value="${p.unit}"></div>
+        <div class="edit-form-group"><label>Thuế %:</label><input type="number" id="editTax" value="${p.tax}"></div>
+        <div class="edit-form-group"><label>Giá vốn (chưa thuế):</label><input type="text" id="editAvg" value="${fmt.format(p.avg)}" oninput="formatInput(this)"></div>
+        <div class="edit-form-group" style="background: #eef7ff; padding: 10px; border-radius: 5px;"><label>Số lượng tồn:</label><input type="text" id="editQty" value="${fmt.format(p.qty)}" oninput="formatInput(this)"></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-confirm" onclick="checkEditAuth(${idx})">LƯU THAY ĐỔI</button>
+        <button onclick="closeModal()">ĐÓNG</button>
+    </div>`;
+
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "1200px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+// 1. Hàm kiểm tra mật khẩu (Sửa lại logic để không làm mất dữ liệu form cũ)
+function checkEditAuth(idx) {
+    const container = document.getElementById("modalContent");
+    
+    // Tạo lớp phủ mờ phía trên form cũ
+    const authOverlay = document.createElement("div");
+    authOverlay.id = "authOverlay";
+    // Cải thiện: background có độ trong suốt nhẹ để vẫn thấy form ẩn phía dưới
+    authOverlay.style = "position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); display:flex; align-items:center; justify-content:center; z-index:100; border-radius:8px; animation: fadeIn 0.2s ease;";
+    
+    authOverlay.innerHTML = `
+        <div style="
+            width: 280px; 
+            padding: 25px; 
+            background: #fff; 
+            border: 1px solid #eee; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            text-align: center;
+        ">
+            <div style="font-size: 30px; margin-bottom: 10px;">🔒</div>
+            <div style="font-size: 15px; font-weight: bold; color: #34495e; margin-bottom: 15px;">XÁC NHẬN BẢO MẬT</div>
+            
+            <input type="password" id="authPassword" placeholder="Mật khẩu" 
+                style="width: 100%; padding: 10px; border: 1.5px solid #ddd; border-radius: 6px; text-align: center; font-size: 16px; outline: none; box-sizing: border-box;">
+            
+            <div id="authError" style="color: #e74c3c; font-size: 12px; margin-top: 8px; display: none; font-weight: bold;">⚠️ Sai mật khẩu!</div>
+            
+            <div style="margin-top: 20px; display: flex; gap: 8px;">
+                <button onclick="document.getElementById('authOverlay').remove()" 
+                    style="flex: 1; padding: 8px; border: 1px solid #ccc; background: #f8f9fa; border-radius: 5px; cursor: pointer; font-size: 13px;">Hủy</button>
+                <button id="btnConfirmAuth" 
+                    style="flex: 1; padding: 8px; border: none; background: #2c3e50; color: white; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px;">Xác nhận</button>
+            </div>
+        </div>
+    `;
+
+    container.style.position = "relative";
+    container.appendChild(authOverlay);
+
+    const input = document.getElementById("authPassword");
+    input.focus();
+
+    document.getElementById("btnConfirmAuth").onclick = function() {
+        if (input.value === "123456") {
+            document.getElementById("authOverlay").remove();
+            saveProductFull(idx);
+        } else {
+            document.getElementById("authError").style.display = "block";
+            input.style.borderColor = "#e74c3c";
+            input.value = "";
+            input.focus();
+        }
+    };
+
+    input.onkeypress = (e) => { if(e.key === "Enter") document.getElementById("btnConfirmAuth").onclick(); };
+}
+
+// 2. Hàm lưu dữ liệu (Giữ nguyên nhưng tối ưu thông báo)
+function saveProductFull(idx) {
+    // Lấy dữ liệu (Lúc này các ID editName, editAvg... vẫn tồn tại vì ta chỉ xóa lớp phủ mật khẩu)
+    const name = document.getElementById("editName").value.trim();
+    const cat = document.getElementById("editCategory").value;
+    const unit = document.getElementById("editUnit").value.trim();
+    const tax = parseFloat(document.getElementById("editTax").value) || 0;
+    const avg = parseFloat(document.getElementById("editAvg").value.replace(/\./g, '')) || 0;
+    const qty = parseFloat(document.getElementById("editQty").value.replace(/\./g, '')) || 0;
+
+    if (!name) { alert("⚠️ Tên hàng không được để trống!"); return; }
+
+    products[idx] = { ...products[idx], name, category: cat, unit, tax, avg, qty };
+
+    if (typeof save === "function") save();
+    
+    // Hiển thị thông báo thành công
+    document.getElementById("modalContent").innerHTML = `
+        <div style="text-align: center; padding: 50px;">
+            <div style="font-size: 50px; color: #27ae60; margin-bottom: 15px;">✅</div>
+            <div style="font-size: 18px; font-weight: bold;">Cập nhật thành công!</div>
+        </div>
+    `;
+
+    setTimeout(() => {
+        closeModal();
+        if (typeof renderInventory === "function") renderInventory();
+        if (typeof renderAll === "function") renderAll();
+    }, 1000);
+}
+
+function reprintInvoice(invNo) {
+    let items = history.filter(h => h.invoiceNo === invNo);
+    if(items.length === 0) return;
+    let first = items[0];
+    let isSale = invNo.startsWith("PXK");
+    let title = isSale ? "PHIẾU XUẤT KHO" : "PHIẾU NHẬP KHO";
+    let partnerLabel = isSale ? "Khách hàng" : "Nhà cung cấp";
+    let sumPreTax = items.reduce((s, i) => s + (i.preTax || i.amount), 0);
+    let sumTaxVal = items.reduce((s, i) => s + (i.taxVal || 0), 0);
+    let sumTotal = sumPreTax + sumTaxVal;
+    
+    let html = `<div class="modal-header" style="background:${isSale?'#007bff':'#b30000'}">${title}</div>
+    <div class="modal-body" id="printArea">
+        <div class="invoice-box">
+            <div class="invoice-header-info" style="border-bottom: 2px solid ${isSale?'#007bff':'#b30000'}">
+                <div><div class="invoice-title" style="color: ${isSale?'#007bff':'#b30000'}">${title}</div><div>Ngày: <b>${fmtDate(first.date)}</b></div></div>
+                <div style="text-align:right"><div>Số phiếu: <b>${invNo}</b></div></div>
+            </div>
+            <div style="margin-bottom:15px"><div>${partnerLabel}: <b>${first.partner}</b></div></div>
+            <table class="preview-table">
+                <thead><tr><th>STT</th><th>Mã Item</th><th>Tên hàng hóa</th><th>ĐVT</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead>
+                <tbody>${items.map((i, idx) => `<tr><td>${idx+1}</td><td>${i.itemCode}</td><td style="text-align:left">${i.name}</td><td>${i.unit||'-'}</td><td>${fmt.format(i.qty)}</td><td style="text-align:right">${fmt.format(i.price || (i.amount/i.qty))}</td><td style="text-align:right">${fmt.format(i.preTax || i.amount)}</td></tr>`).join('')}</tbody>
+            </table>
+            <div class="invoice-summary">
+                ${sumTaxVal > 0 ? `<div><span>Cộng tiền hàng:</span> <b>${fmt.format(sumPreTax)}</b></div><div><span>Thuế GTGT:</span> <b>${fmt.format(sumTaxVal)}</b></div>` : ''}
+                <div style="border-top:1px solid #ccc; margin-top:5px; padding-top:5px"><span>TỔNG CỘNG:</span> <b style="color:${isSale?'#007bff':'#b30000'}; font-size:1.3em">${fmt.format(sumTotal)}</b></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn-blue" onclick="window.print()">🖨️ IN PHIẾU</button><button onclick="closeModal()">ĐÓNG</button></div>`;
+    document.getElementById("modalContent").innerHTML = html;
+}
+
+function addRowImport() {
+    let tr = document.createElement("tr");
+    tr.innerHTML = `<td><input list="productDataList" class="imp-code" style="width: 100%; box-sizing: border-box; min-width: 400px;" onchange="updateImportInfo(this)" placeholder="Nhập mã Item hoặc tên..."></td>
+                    <td><input type="text" class="imp-unit" readonly style="width:70px; background:#f0f0f0"></td>
+                    <td><input type="text" class="imp-qty" style="width:70px" oninput="formatInput(this)"></td>
+                    <td><input type="text" class="imp-price" style="width:110px" oninput="formatInput(this)"></td>
+                    <td><input type="text" class="imp-tax" readonly style="width:50px; background:#f0f0f0"></td>
+                    <td onclick="this.parentElement.remove()" style="color:red;cursor:pointer">✖</td>`;
+    document.getElementById("multiImportBody").appendChild(tr);
+}
+
+function updateImportInfo(inputEl) {
+    let row = inputEl.parentElement.parentElement;
+    let unitInput = row.querySelector(".imp-unit");
+    let taxInput = row.querySelector(".imp-tax");
+    let val = inputEl.value.trim();
+
+    let p = products.find(prod => prod.itemCode === val || prod.name.toLowerCase() === val.toLowerCase());
+    if (p) {
+        unitInput.value = p.unit;
+        taxInput.value = p.tax;
+        inputEl.value = p.name;
+        inputEl.setAttribute('data-item-code', p.itemCode);
+    } else {
+        unitInput.value = ""; 
+        taxInput.value = ""; 
+        inputEl.removeAttribute('data-item-code');
+    }
+}
+
+function previewImport() {
+    let ncc = document.getElementById("supplierSelect").value;
+    let dateInput = document.getElementById("importDate").value;
+    if (!ncc) return showSimpleWarning("Vui lòng chọn Nhà cung cấp");
+    if (!dateInput) return showSimpleWarning("Vui lòng chọn Ngày nhập hàng");
+    importPending = [];
+    let rows = document.querySelectorAll("#multiImportBody tr");
+    if (rows.length === 0) return showSimpleWarning("Chưa có mặt hàng nào");
+
+    let invNo = "PNK-" + Date.now().toString().slice(-6);
+
+    for (let r of rows) {
+        let itemCode = r.querySelector(".imp-code").getAttribute('data-item-code');
+        if (!itemCode) continue;
+        let p = products.find(prod => prod.itemCode === itemCode);
+        if (!p) continue;
+
+        let qty = parseVN(r.querySelector(".imp-qty").value);
+        let price = parseVN(r.querySelector(".imp-price").value);
+        let tax = parseVN(r.querySelector(".imp-tax").value);
+        let preTax = qty * price;
+        let taxVal = preTax * (tax/100);
+
+        importPending.push({ 
+            invoiceNo: invNo, 
+            itemCode: p.itemCode, 
+            name: p.name, 
+            unit: p.unit, 
+            qty, price, tax, preTax, taxVal, 
+            total: preTax + taxVal, 
+            cost: preTax 
+        });
+    }
+
+    if (importPending.length === 0) return showSimpleWarning("Không tìm thấy sản phẩm hợp lệ nào");
+
+    let dateStr = fmtDate(dateInput);
+    let sumPreTax = importPending.reduce((s, i) => s + i.preTax, 0);
+    let sumTaxVal = importPending.reduce((s, i) => s + i.taxVal, 0);
+    let sumTotal = sumPreTax + sumTaxVal;
+    
+    let html = `<div class="modal-header">XEM TRƯỚC PHIẾU NHẬP</div>
+    <div class="modal-body" id="printArea">
+        <div class="invoice-box">
+            <div class="invoice-header-info"><div><div class="invoice-title">PHIẾU NHẬP KHO</div><div>Ngày nhập: <b>${dateStr}</b></div></div><div style="text-align:right"><div>Mã phiếu: <b>${invNo}</b></div><div>Kho: <b>KHO XUÂN NIÊN</b></div></div></div>
+            <div style="margin-bottom:15px"><div>Nhà cung cấp: <b>${ncc}</b></div></div>
+            <table class="preview-table">
+                <thead><tr><th>STT</th><th>Mã Item</th><th>Tên hàng hóa</th><th>ĐVT</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead>
+                <tbody>${importPending.map((i, index) => `<tr><td>${index+1}</td><td>${i.itemCode}</td><td style="text-align:left">${i.name}</td><td>${i.unit}</td><td>${fmt.format(i.qty)}</td><td style="text-align:right">${fmt.format(i.price)}</td><td style="text-align:right">${fmt.format(i.preTax)}</td></tr>`).join('')}</tbody>
+            </table>
+            <div class="invoice-summary"><div><span>Cộng tiền hàng:</span> <b>${fmt.format(sumPreTax)}</b></div><div><span>Tiền thuế GTGT:</span> <b>${fmt.format(sumTaxVal)}</b></div><div style="border-top:1px solid #ccc; margin-top:5px; padding-top:5px"><span>TỔNG GIÁ TRỊ NHẬP:</span> <b style="color:#b30000; font-size:1.3em">${fmt.format(sumTotal)}</b></div></div>
+            <div style="margin-top:15px; background:#eef7ff; padding:10px; border-radius:4px">
+                Hình thức: <select id="imPMethod"><option>Tiền mặt</option><option>Chuyển khoản</option></select>
+                Số tiền thực trả: <input type="text" id="imP" value="${fmt.format(sumTotal)}" oninput="formatInput(this)" style="font-weight:bold; width:150px">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer" id="modal-actions-import"><button id="btn-final-import" class="btn-confirm" onclick="finalImport()">XÁC NHẬN NHẬP KHO</button><button id="btn-back-import" onclick="closeModal()">QUAY LẠI SỬA</button></div>`;
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "1200px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function finalImport() {
+    let paid = parseVN(document.getElementById("imP").value);
+    let method = document.getElementById("imPMethod").value;
+    let ncc = document.getElementById("supplierSelect").value;
+    let date = document.getElementById("importDate").value;
+
+    // Kiểm tra dữ liệu đầu vào
+    if (!ncc) {
+        alert("Vui lòng chọn Nhà cung cấp!");
+        return;
+    }
+    if (!date) {
+        alert("Vui lòng chọn ngày nhập hàng!");
+        return;
+    }
+    if (importPending.length === 0) {
+        alert("Không có sản phẩm nào để nhập kho!");
+        return;
+    }
+
+    // Tạo thời gian hiện tại
+    const now = new Date();
+    const currentTime = now.getHours().toString().padStart(2, '0') + ':' + 
+                       now.getMinutes().toString().padStart(2, '0');
+
+    const importId = "IMP-" + Date.now();
+
+    // Cập nhật kho và ghi lịch sử cho từng mặt hàng
+    importPending.forEach(i => {
+        let p = products.find(prod => prod.itemCode === i.itemCode);
+        if (p) {
+            let oldVal = p.qty * p.avg;
+            p.qty += i.qty;
+            if (p.qty > 0) {
+                p.avg = (oldVal + (i.qty * i.price)) / p.qty;
+            }
+
+            let amountWithTax = i.preTax + (i.taxVal || 0);
+
+            history.push({
+                historyId: Date.now().toString() + Math.random().toString(16).slice(2),
+                ...i,
+                date: date,
+                time: currentTime,                    // ← Đã sửa đúng
+                partner: ncc,
+                type: 'NHẬP',
+                amount: amountWithTax,
+                historyId: importId + "-ITEM"
+            });
+        }
+    });
+
+    // Ghi lịch sử thanh toán
+    history.push({
+        historyId: Date.now().toString() + Math.random().toString(16).slice(2),
+        date: date,
+        time: currentTime,                            // ← Đã sửa đúng
+        partner: ncc,
+        type: 'TRA_NO',
+        name: `Thanh toán nhập hàng (${method})`,
+        amount: paid,
+        method: method,
+        isPayment: true,
+        invoiceNo: (importPending[0] ? importPending[0].invoiceNo + "-TT" : "TT-" + Date.now()),
+        historyId: importId + "-PAY"
+    });
+
+    // Thay nút xác nhận bằng nút in + đóng
+    const modalActions = document.getElementById("modal-actions-import");
+    if (modalActions) {
+        modalActions.innerHTML = `
+            <button class="btn-blue" onclick="window.print()">🖨️ IN PHIẾU</button>
+            <button onclick="finishImportWorkflow()">ĐÓNG</button>
+        `;
+    }
+
+    save();
+    console.log("✅ Nhập kho thành công - ID:", importId);
+}
+
+function finishImportWorkflow() {
+    document.getElementById("multiImportBody").innerHTML = ""; 
+    document.getElementById("supplierSelect").value = "";
+    addRowImport(); 
+    closeModal();
+}
+
+function addRowSale() {
+    let tr = document.createElement("tr");
+    tr.innerHTML = `<td><input list="productDataList" class="sale-code" style="width: 100%; box-sizing: border-box; min-width: 400px;" onchange="updateSaleInfo(this)" placeholder="Nhập mã Item hoặc tên..."></td>
+                    <td><input type="text" class="sale-unit" readonly style="width:70px; background:#f0f0f0"></td>
+                    <td><input type="text" class="sale-qty" style="width:70px" oninput="formatInput(this)" placeholder="Tồn: 0"></td>
+                    <td><input type="text" class="sale-price" style="width:110px" oninput="formatInput(this)"></td>
+                    <td><input type="text" class="sale-tax" readonly style="width:50px; background:#f0f0f0"></td>
+                    <td onclick="this.parentElement.remove()" style="color:red;cursor:pointer">✖</td>`;
+    document.getElementById("multiSaleBody").appendChild(tr);
+}
+
+function updateSaleInfo(inputEl) {
+    let row = inputEl.parentElement.parentElement;
+    let unitInput = row.querySelector(".sale-unit");
+    let taxInput = row.querySelector(".sale-tax");
+    let qtyInput = row.querySelector(".sale-qty");
+    let inputValue = inputEl.value.trim();
+
+    // Chuẩn hóa input người dùng gõ (bỏ dấu + lowercase)
+    let searchKey = removeVietnameseTone(inputValue);
+
+    // Tìm sản phẩm khớp (bỏ dấu cho cả mã + tên)
+    let p = products.find(prod => {
+        let codeNoTone = removeVietnameseTone(prod.itemCode);
+        let nameNoTone = removeVietnameseTone(prod.name);
+        return codeNoTone === searchKey || nameNoTone === searchKey;
+    });
+
+    if (p) {
+        unitInput.value = p.unit || '';
+        taxInput.value = p.tax || 0;
+        qtyInput.placeholder = "Tồn: " + fmt.format(p.qty);
+        inputEl.value = p.name;                    // hiển thị tên đầy đủ có dấu
+        inputEl.setAttribute('data-item-code', p.itemCode);
+    } else {
+        unitInput.value = "";
+        taxInput.value = "";
+        qtyInput.placeholder = "Tồn: 0";
+        inputEl.removeAttribute('data-item-code');
+    }
+}
+
+function previewSale() {
+    let cust = document.getElementById("saleCustomer").value;
+    let dateInput = document.getElementById("saleDate").value;
+    if(!cust) return showSimpleWarning("Vui lòng chọn Khách hàng");
+    if(!dateInput) return showSimpleWarning("Vui lòng chọn Ngày xuất");
+    salePending = [];
+    let lossItems = [];
+    let stockAlertItems = [];
+    let rows = document.querySelectorAll("#multiSaleBody tr");
+    let invNo = "PXK-" + Date.now().toString().slice(-6);
+
+    for(let r of rows) {
+        let itemCode = r.querySelector(".sale-code").getAttribute('data-item-code');
+        if(!itemCode) continue;
+        let p = products.find(prod => prod.itemCode === itemCode);
+        if(!p) continue;
+
+        let qty = parseVN(r.querySelector(".sale-qty").value);
+        let price = parseVN(r.querySelector(".sale-price").value);
+        let tax = parseVN(r.querySelector(".sale-tax").value);
+
+        if(qty > p.qty) stockAlertItems.push({ name: p.name, itemCode: p.itemCode, current: p.qty, request: qty });
+        if (price < p.avg) lossItems.push({ name: p.name, itemCode: p.itemCode, avg: p.avg, price: price });
+
+        salePending.push({ 
+            invoiceNo: invNo, 
+            itemCode: p.itemCode, 
+            name: p.name, 
+            unit: p.unit, 
+            qty, 
+            price, 
+            tax, 
+            preTax: qty * price, 
+            taxVal: (qty * price) * (tax/100), 
+            total: (qty * price) + ((qty * price) * (tax/100)), 
+            cost: p.avg * qty 
+        });
+    }
+
+    if(stockAlertItems.length > 0) return showStockWarningModal(stockAlertItems);
+    if(lossItems.length > 0) return showLossWarningModal(lossItems);
+    proceedToSalePreview();
+}
+
+function showStockWarningModal(items) {
+    let html = `<div class="loss-warning-card"><div class="loss-header" style="background: #e67e22;">⚠️ CẢNH BÁO TỒN KHO KHÔNG ĐỦ</div><div class="modal-body"><p>Các mặt hàng sau có số lượng xuất lớn hơn tồn kho:</p>${items.map(i => `<div class="loss-item-row"><div class="loss-item-name">${i.itemCode} - ${i.name}</div><div class="loss-details">Đang có: <b style="color:#27ae60">${fmt.format(i.current)}</b><br>Yêu cầu: <b style="color:#e74c3c">${fmt.format(i.request)}</b></div></div>`).join('')}</div><div class="modal-footer"><button onclick="closeModal()" class="btn-confirm" style="background:#e67e22">QUAY LẠI CHỈNH SỬA</button></div></div>`;
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "500px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function showLossWarningModal(items) {
+    let html = `<div class="loss-warning-card"><div class="loss-header">⚠️ CẢNH BÁO BÁN DƯỚI GIÁ VỐN</div><div class="modal-body"><p>Các mặt hàng sau có giá bán thấp hơn giá vốn:</p>${items.map(i => `<div class="loss-item-row"><div class="loss-item-name">${i.itemCode} - ${i.name}</div><div class="loss-details">Giá vốn: <b>${fmt.format(i.avg)}</b><br>Giá bán: <span class="loss-value">${fmt.format(i.price)}</span></div></div>`).join('')}</div><div class="modal-footer"><button class="btn-confirm" style="background:#dc3545" onclick="proceedToSalePreview()">VẪN TIẾP TỤC XUẤT</button><button onclick="closeModal()">QUAY LẠI SỬA GIÁ</button></div></div>`;
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "500px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function proceedToSalePreview() {
+    let cust = document.getElementById("saleCustomer").value;
+    let dateStr = fmtDate(document.getElementById("saleDate").value);
+    let sumPreTax = salePending.reduce((s, i) => s + i.preTax, 0);
+    let sumTaxVal = salePending.reduce((s, i) => s + i.taxVal, 0);
+    let sumTotal = sumPreTax + sumTaxVal;
+
+    let html = `<div class="modal-header" style="background: #007bff;">XEM TRƯỚC PHIẾU XUẤT BÁN</div>
+    <div class="modal-body" id="printArea">
+        <div class="invoice-box">
+            <div class="invoice-header-info" style="border-bottom: 2px solid #007bff;"><div><div class="invoice-title" style="color: #007bff;">PHIẾU XUẤT KHO / HÓA ĐƠN</div><div>Ngày: <b>${dateStr}</b></div></div><div style="text-align:right"><div>Số phiếu: <b>${salePending[0].invoiceNo}</b></div></div></div>
+            <div style="margin-bottom:15px"><div>Khách hàng: <b>${cust}</b></div></div>
+            <table class="preview-table">
+                <thead><tr><th>STT</th><th>Mã Item</th><th>Tên hàng</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead>
+                <tbody>${salePending.map((i, index) => `<tr><td>${index+1}</td><td>${i.itemCode}</td><td style="text-align:left">${i.name}</td><td>${fmt.format(i.qty)}</td><td style="text-align:right">${fmt.format(i.price)}</td><td style="text-align:right">${fmt.format(i.preTax)}</td></tr>`).join('')}</tbody>
+            </table>
+            <div class="invoice-summary">
+                <div><span>Cộng tiền hàng:</span> <b>${fmt.format(sumPreTax)}</b></div>
+                <div><span>Tiền thuế GTGT:</span> <b>${fmt.format(sumTaxVal)}</b></div>
+                <div style="border-top:1px solid #ccc; margin-top:5px; padding-top:5px"><span>TỔNG THANH TOÁN:</span> <b style="color:#007bff; font-size:1.3em">${fmt.format(sumTotal)}</b></div>
+            </div>
+            <div style="margin-top:15px; background:#eef7ff; padding:10px; border-radius:4px">
+                Hình thức: <select id="salePMethod"><option>Tiền mặt</option><option>Chuyển khoản</option></select>
+                Khách thanh toán: <input type="text" id="paidAmount" value="${fmt.format(sumTotal)}" oninput="formatInput(this)" style="font-weight:bold; width:150px">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer" id="modal-actions-sale"><button id="btn-final-sale" class="btn-confirm" style="background: #007bff;" onclick="finalSale()">XÁC NHẬN XUẤT KHO</button><button onclick="closeModal()">QUAY LẠI SỬA</button></div>`;
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "1200px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function finalSale() {
+    let paid = parseVN(document.getElementById("paidAmount").value);
+    let method = document.getElementById("salePMethod").value;
+    let cust = document.getElementById("saleCustomer").value;
+    let date = document.getElementById("saleDate").value;
+
+    // Kiểm tra dữ liệu đầu vào
+    if (!cust) {
+        alert("Vui lòng chọn Khách hàng!");
+        return;
+    }
+    if (!date) {
+        alert("Vui lòng chọn ngày xuất hàng!");
+        return;
+    }
+    if (salePending.length === 0) {
+        alert("Không có sản phẩm nào để xuất kho!");
+        return;
+    }
+
+    // Tạo thời gian hiện tại
+    const now = new Date();
+    const currentTime = now.getHours().toString().padStart(2, '0') + ':' + 
+                       now.getMinutes().toString().padStart(2, '0');
+
+    const saleId = "SALE-" + Date.now();
+
+    // Cập nhật kho và ghi lịch sử cho từng mặt hàng
+    salePending.forEach(i => {
+        let p = products.find(prod => prod.itemCode === i.itemCode);
+        if (p) {
+            p.qty -= i.qty;
+            let totalWithTax = i.preTax + (i.taxVal || 0);
+
+            history.push({
+                historyId: Date.now().toString() + Math.random().toString(16).slice(2),
+                ...i,
+                date: date,
+                time: currentTime,                    // ← Đã sửa đúng
+                partner: cust,
+                type: 'XUẤT',
+                amount: totalWithTax,
+                historyId: saleId + "-ITEM"
+            });
+        }
+    });
+
+    // Ghi lịch sử thanh toán
+    history.push({
+        historyId: Date.now().toString() + Math.random().toString(16).slice(2),
+        date: date,
+        time: currentTime,                            // ← Đã sửa đúng
+        partner: cust,
+        type: 'THU_NO',
+        name: `Thanh toán đơn hàng (${method})`,
+        amount: paid,
+        method: method,
+        isPayment: true,
+        invoiceNo: (salePending[0] ? salePending[0].invoiceNo + "-TT" : "TT-" + Date.now()),
+        historyId: saleId + "-PAY"
+    });
+
+    // Thay nút xác nhận bằng nút in + đóng
+    const modalActions = document.getElementById("modal-actions-sale");
+    if (modalActions) {
+        modalActions.innerHTML = `
+            <button class="btn-blue" onclick="window.print()">🖨️ IN PHIẾU</button>
+            <button onclick="finishSaleWorkflow()">ĐÓNG</button>
+        `;
+    }
+
+    save();
+    console.log("✅ Xuất kho thành công - ID:", saleId);
+}
+
+function finishSaleWorkflow() {
+    document.getElementById("multiSaleBody").innerHTML = ""; 
+    document.getElementById("saleCustomer").value = "";
+    addRowSale(); 
+    closeModal();
+}
+
+function setQuickDate(mode) {
+    if (!mode) return;
+    let from = document.getElementById("reportFrom");
+    let to = document.getElementById("reportTo");
+    
+    let now = new Date();
+    let fDate, tDate;
+
+    if(mode === 'today') {
+        fDate = tDate = now;
+    } else if(mode === 'yesterday') {
+        fDate = tDate = new Date(new Date().setDate(now.getDate() - 1));
+    } else if(mode === 'thisMonth') {
+        fDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        tDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    } else if(mode === 'lastMonth') {
+        fDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        tDate = new Date(now.getFullYear(), now.getMonth(), 0);
+    } else if(mode === 'thisYear') {
+        fDate = new Date(now.getFullYear(), 0, 1);
+        tDate = new Date(now.getFullYear(), 11, 31);
+    }
+    
+    from.value = fDate.toLocaleDateString('sv-SE');
+    to.value = tDate.toLocaleDateString('sv-SE');
+    renderAll();
+}
+
+// Hàm chọn ngày nhanh cho Tab Chi phí
+function setQuickDateCashflow(mode) {
+    if (!mode) return;
+    
+    let fromInput = document.getElementById("cfFrom");
+    let toInput   = document.getElementById("cfTo");
+    let now = new Date();
+    let fromDate, toDate;
+
+    if (mode === 'all') {
+        fromInput.value = ""; 
+        toInput.value = "";
+        renderCashFlow(); 
+        return; // Thoát hàm sớm vì không cần xử lý biến fromDate/toDate bên dưới
+    }
+
+    if (mode === 'today') {
+        fromDate = toDate = now;
+    } 
+    else if (mode === 'yesterday') {
+        let yesterday = new Date(now);
+        yesterday.setDate(now.getDate() - 1);
+        fromDate = toDate = yesterday;
+    } 
+    else if (mode === 'thisMonth') {
+        fromDate = new Date(now.getFullYear(), now.getMonth(), 1);           // 01 của tháng hiện tại
+        toDate   = new Date(now.getFullYear(), now.getMonth() + 1, 0);       // Ngày cuối cùng của tháng hiện tại
+    } 
+    else if (mode === 'lastMonth') {
+        fromDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);       // 01 của tháng trước
+        toDate   = new Date(now.getFullYear(), now.getMonth(), 0);           // Ngày cuối cùng của tháng trước
+    } 
+    else if (mode === 'thisYear') {
+        fromDate = new Date(now.getFullYear(), 0, 1);                        // 01/01 năm nay
+        toDate   = new Date(now.getFullYear(), 11, 31);                      // 31/12 năm nay
+    } 
+    else if (mode === 'lastYear') {
+        fromDate = new Date(now.getFullYear() - 1, 0, 1);                    // 01/01 năm trước
+        toDate   = new Date(now.getFullYear() - 1, 11, 31);                  // 31/12 năm trước
+    }
+
+    // Gán giá trị vào input date
+    if (fromDate) fromInput.value = fromDate.toISOString().split('T')[0];
+    if (toDate)   toInput.value   = toDate.toISOString().split('T')[0];
+
+    renderCashFlow();   // Tự động cập nhật bảng + tổng quỹ
+}
+
+function buildPartnerDebtMap() {
+    const map = {};
+
+    history.forEach(h => {
+        if (h.isCancelled) return;
+
+        const name = h.partner;
+        if (!name) return;
+
+        if (!map[name]) {
+            map[name] = 0;
+        }
+
+        let change = 0;
+
+        if (h.type === 'XUẤT' || h.type === 'NHẬP') {
+            change = h.amount;
+        } else if (h.isPayment) {
+            change = -h.amount;
+        }
+
+        map[name] += change;
+    });
+
+    return map;
+}
+
+function buildFastCache() {
+    const cache = {
+        byPartner: {}
+    };
+
+    history.forEach(h => {
+        if (!cache.byPartner[h.partner]) {
+            cache.byPartner[h.partner] = [];
+        }
+        cache.byPartner[h.partner].push(h);
+    });
+
+    return cache;
+}
+
+function renderAll() {
+    renderInventory();
+    
+    const fastCache = buildFastCache();
+
+    const partnerDebtMap = buildPartnerDebtMap();
+
+    const debtCache = buildDebtCache();
+
+    // TỐI ƯU GỢI Ý SẢN PHẨM: 1 sản phẩm = 1 dòng duy nhất
+    document.getElementById("productDataList").innerHTML = products.map(p => {
+        // Tạo chuỗi bổ trợ để trình duyệt hỗ trợ tìm kiếm ẩn (không dấu)
+        let searchString = `${p.itemCode} ${p.name} ${removeVietnameseTone(p.name)} ${p.category || ''}`;
+        
+        return `
+            <option value="${p.itemCode}">
+                ${p.itemCode} - ${p.name} | Kho: ${fmt.format(p.qty)} ${p.unit} | Thuế: ${p.tax}%
+            </option>
+        `;
+    }).join('');
+    document.getElementById("saleCustomer").innerHTML = customers.map(c => `<option>${c.name}</option>`).join('');
+    document.getElementById("supplierSelect").innerHTML = suppliers.map(s => `<option>${s.name}</option>`).join('');
+    
+    let fromDate = document.getElementById("reportFrom").value;
+    let toDate = document.getElementById("reportTo").value;
+    let type = document.getElementById("reportType").value;
+    
+    // LỌC BÁO CÁO: Chỉ lấy những mục chưa bị Hủy
+    let filtered = history.filter(h => {
+        if (h.isCancelled) return false;
+
+        const hDate = new Date(h.date);
+        const from = fromDate ? new Date(fromDate) : null;
+        const to   = toDate ? new Date(toDate) : null;
+
+        if (from && hDate < from) return false;
+        if (to && hDate > to) return false;
+
+        return true;
+    });
+    
+    let totalSale = 0;
+    let totalCost = 0;
+    let totalCashIn = 0;
+    let totalCashOut = 0;
+
+    let partnerMap = {}; // gom công nợ luôn (tối ưu luôn phía dưới)
+
+    filtered.forEach(h => {
+        const amt = h.amount || 0;
+
+        // Doanh thu + giá vốn
+        if (h.type === 'XUẤT') {
+            totalSale += amt;
+            totalCost += (h.cost || 0);
+        }
+
+        // Thu / chi công nợ
+        else if (h.type === 'THU_NO') {
+            totalCashIn += amt;
+        }
+        else if (h.type === 'TRA_NO') {
+            totalCashOut += amt;
+        }
+
+        // Gom theo đối tác (chuẩn bị cho phần dưới)
+        if (!partnerMap[h.partner]) {
+            partnerMap[h.partner] = {
+                debt: 0
+            };
+        }
+
+        let change = (h.type === 'XUẤT' || h.type === 'NHẬP') 
+            ? amt 
+            : (h.isPayment ? -amt : 0);
+
+        partnerMap[h.partner].debt += change;
+    });
+    
+    document.getElementById("repSumSale").innerText = fmt.format(totalSale);
+    document.getElementById("repSumCost").innerText = fmt.format(totalCost);
+    document.getElementById("repSumProfit").innerText = fmt.format(totalSale - totalCost);
+    document.getElementById("repSumCash").innerText = fmt.format(totalCashIn - totalCashOut);
+
+    let head = document.getElementById("reportHeader");
+    let body = document.getElementById("reportTableBody");
+    head.innerHTML = ""; body.innerHTML = "";
+
+    if(type === 'history') {
+        head.innerHTML = `<tr><th>Ngày</th><th>Đối tác</th><th>Loại</th><th>Mã Item</th><th>Số phiếu / Nội dung</th><th>Giá trị</th><th>Thao tác</th></tr>`;
+        // Riêng tab lịch sử tổng, hiển thị cả đồ đã hủy nhưng gạch ngang
+        let rawFiltered = history.filter(h => {
+            const hDate = new Date(h.date);
+            const from = fromDate ? new Date(fromDate) : null;
+            const to   = toDate ? new Date(toDate) : null;
+
+            if (from && hDate < from) return false;
+            if (to && hDate > to) return false;
+
+            return true;
+        });
+        rawFiltered.slice().reverse().forEach(l => {
+
+            // Đảm bảo mỗi record có historyId (fallback cho dữ liệu cũ)
+            if (!l.historyId) {
+                l.historyId = Date.now().toString() + Math.random().toString(36).slice(2,5);
+            }
+
+            let isVoid = l.isCancelled === true;
+            let displayInvoice = l.invoiceNo 
+                ? `<span class="clickable" onclick="reprintInvoice('${l.invoiceNo}')">${l.invoiceNo}</span>` 
+                : (l.name || '');
+
+            let rowStyle = isVoid ? 'text-decoration:line-through; color:#aaa;' : '';
+
+            body.innerHTML += `<tr style="${rowStyle}">
+                <td>${fmtDate(l.date)}</td>
+                <td>${l.partner}</td>
+                <td style="color:${l.type==='XUẤT'?'blue':'green'}">${l.type}</td>
+                <td>${l.itemCode || '-'}</td>
+                <td>${displayInvoice} ${isVoid ? '(HỦY)' : ''}</td>
+                <td>${fmt.format(l.amount)}</td>
+                <td>
+                    ${isVoid ? '' : `<button class="btn-danger" onclick="deleteHistoryItem('${l.historyId}')">Hủy</button>`}
+                </td>
+            </tr>`;
+        });
+    } else if(type === 'profit') {
+        head.innerHTML = `<tr><th>Ngày</th><th>Mã Item</th><th>Tên hàng</th><th>SL</th><th>Doanh thu</th><th>Giá vốn</th><th>Lợi nhuận</th></tr>`;
+        filtered.filter(h => h.type === 'XUẤT').forEach(l => {
+            let profit = l.amount - (l.cost || 0);
+            body.innerHTML += `<tr><td>${fmtDate(l.date)}</td><td>${l.itemCode}</td><td style="text-align:left">${l.name}</td><td>${fmt.format(l.qty)}</td><td>${fmt.format(l.amount)}</td><td>${fmt.format(l.cost || 0)}</td><td style="font-weight:bold; color:${profit>=0?'green':'red'}">${fmt.format(profit)}</td></tr>`;
+        });
+    } else if(type === 'import') {
+        head.innerHTML = `<tr><th>Ngày</th><th>NCC</th><th>Mã Item</th><th>Tên hàng</th><th>SL</th><th>Giá nhập</th><th>Thành tiền</th></tr>`;
+        filtered.filter(h => h.type === 'NHẬP').forEach(l => {
+            body.innerHTML += `<tr><td>${fmtDate(l.date)}</td><td>${l.partner}</td><td>${l.itemCode}</td><td style="text-align:left">${l.name}</td><td>${fmt.format(l.qty)}</td><td>${fmt.format(l.price)}</td><td>${fmt.format(l.amount)}</td></tr>`;
+        });
+    } else if(type === 'custDebt' || type === 'suppDebt') {
+        let isCust = (type === 'custDebt');
+        let targets = isCust ? customers : suppliers;
+        head.innerHTML = `<tr><th>Đối tác</th><th>Nợ đầu kỳ</th><th>Phát sinh trong kỳ</th><th>Đã trả/thu</th><th>Nợ cuối kỳ</th></tr>`;
+        targets.forEach(partnerObj => {
+            let p = partnerObj.name;
+            // Tính nợ phải loại bỏ !h.isCancelled
+            let nDau = history.filter(h => 
+                h.partner === p &&
+                new Date(h.date) < new Date(fromDate) &&
+                !h.isCancelled
+            ).reduce((s,i) => s + (i.isPayment ? -i.amount : i.amount), 0);
+            let nPhatSinh = filtered.filter(h => h.partner === p && !h.isPayment).reduce((s,i) => s + i.amount, 0);
+            let nDaTra = filtered.filter(h => h.partner === p && h.isPayment).reduce((s,i) => s + i.amount, 0);
+            body.innerHTML += `<tr onclick="viewPartnerLog('${p}')" style="cursor:pointer"><td>${p}</td><td>${fmt.format(nDau)}</td><td style="color:#e74c3c; font-weight:bold">+${fmt.format(nPhatSinh)}</td><td style="color:#27ae60; font-weight:bold">-${fmt.format(nDaTra)}</td><td style="font-weight:bold; color:${(nDau + nPhatSinh - nDaTra) >= 0 ? '#b30000' : '#27ae60'}">${fmt.format(nDau + nPhatSinh - nDaTra)}</td></tr>`;
+        });
+    } else if(type === 'tonkho') {
+        head.innerHTML = `<tr><th>Mã Item</th><th>Tên sản phẩm</th><th>ĐVT</th><th>SL Tồn</th><th>Giá vốn</th><th>Giá trị tồn</th></tr>`;
+        products.forEach(p => {
+            let value = p.qty * p.avg;
+            body.innerHTML += `<tr><td>${p.itemCode}</td><td style="text-align:left">${p.name}</td><td>${p.unit}</td><td>${fmt.format(p.qty)}</td><td>${fmt.format(p.avg)}</td><td style="font-weight:bold">${fmt.format(value)}</td></tr>`;
+        });
+    }
+
+    // HIỂN THỊ DANH SÁCH KHÁCH HÀNG (CARD)
+    let custSearchInput = document.getElementById("searchCustInput").value.trim();
+    let custKeyNoTone = removeVietnameseTone(custSearchInput);
+
+    document.getElementById("customerGrid").innerHTML = customers
+        .filter(c => {
+            let nameNoTone = removeVietnameseTone(c.name);
+            return custKeyNoTone === "" || nameNoTone.includes(custKeyNoTone) || 
+                   removeVietnameseTone(c.phone || "").includes(custKeyNoTone);
+        })
+        .map(c => {
+            // TÍNH CÔNG NỢ THỰC TẾ (TRỪ ĐỒ HỦY)
+            let debt = debtCache[c.name]?.customer || 0;
+
+            return `
+            <div class="partner-item-card" onclick="viewPartnerLog('${c.name}')">
+                <div class="partner-name-box">👤 ${c.name} 
+                    <button class="btn-blue" style="font-size:11px; padding:3px 8px; margin-left:8px;" 
+                            onclick="event.stopPropagation(); editPartnerFullInfo('${c.name}', false)">✏️</button>
+                </div>
+                <div class="partner-debt-box">
+                    <div class="partner-debt-label">Nợ khách hàng</div>
+                    <div class="partner-debt-value">${fmt.format(debt)}</div>
+                </div>
+                ${c.phone ? `<div style="font-size:12px; color:#555; margin-top:6px;">📞 ${c.phone}</div>` : ''}
+            </div>`;
+        }).join('');
+
+    // HIỂN THỊ DANH SÁCH NCC (CARD)
+    let suppSearchInput = document.getElementById("searchSuppInput").value.trim();
+    let suppKeyNoTone = removeVietnameseTone(suppSearchInput);
+
+    document.getElementById("supplierGrid").innerHTML = suppliers
+        .filter(s => {
+            let nameNoTone = removeVietnameseTone(s.name);
+            return suppKeyNoTone === "" || nameNoTone.includes(suppKeyNoTone) || 
+                   removeVietnameseTone(s.phone || "").includes(suppKeyNoTone);
+        })
+        .map(s => {
+            // TÍNH CÔNG NỢ THỰC TẾ (TRỪ ĐỒ HỦY)
+            let debt = debtCache[s.name]?.supplier || 0;
+
+            return `
+            <div class="partner-item-card" onclick="viewPartnerLog('${s.name}')" style="border-left: 4px solid #b30000;">
+                <div class="partner-name-box">🚚 ${s.name} 
+                    <button class="btn-blue" style="font-size:11px; padding:3px 8px; margin-left:8px;" 
+                            onclick="event.stopPropagation(); editPartnerFullInfo('${s.name}', true)">✏️</button>
+                </div>
+                <div class="partner-debt-box" style="background: #fffafa;">
+                    <div class="partner-debt-label">Tổng nợ cần trả</div>
+                    <div class="partner-debt-value" style="color: #b30000;">${fmt.format(debt)}</div>
+                </div>
+                ${s.phone ? `<div style="font-size:12px; color:#555; margin-top:6px;">📞 ${s.phone}</div>` : ''}
+            </div>`;
+        }).join('');
+
+    const todayStr = new Date().toLocaleDateString('sv-SE');
+    ["saleDate", "importDate", "reportFrom", "reportTo"].forEach(id => { 
+        if(document.getElementById(id) && !document.getElementById(id).value) document.getElementById(id).value = todayStr; 
+    });
+}
+
+function removeVietnameseTone(str) {
+    if (!str) return '';
+    return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d").replace(/Đ/g, "D")
+        .replace(/\s+/g, ' ') // Xóa khoảng trắng thừa
+        .trim()
+        .toLowerCase();
+}
+
+function renderInventory() {
+    // Lấy từ khóa tìm kiếm và chuẩn hóa về không dấu
+    const searchInput = document.getElementById("searchProduct").value.trim();
+    const keyNoTone = removeVietnameseTone(searchInput);
+
+    let html = "";
+    let totalQty = 0;
+    let totalPreTax = 0;
+    let totalWithTax = 0;
+
+    products.forEach((p, idx) => {
+        const preTaxTotal = p.qty * p.avg;
+        const withTaxTotal = preTaxTotal * (1 + p.tax / 100);
+
+        // Chuẩn hóa các trường cần tìm kiếm về dạng không dấu
+        const codeNoTone   = removeVietnameseTone(p.itemCode);
+        const nameNoTone   = removeVietnameseTone(p.name);
+        const categoryNoTone = removeVietnameseTone(p.category || "Chưa phân loại");
+
+        // Kiểm tra khớp (không phân biệt dấu, hoa thường)
+        const matches = 
+            keyNoTone === "" ||
+            codeNoTone.includes(keyNoTone) ||
+            nameNoTone.includes(keyNoTone) ||
+            categoryNoTone.includes(keyNoTone);
+
+        if (matches) {
+            totalQty += p.qty;
+            totalPreTax += preTaxTotal;
+            totalWithTax += withTaxTotal;
+
+            html += `<tr>
+                <td>${p.itemCode}</td>
+                <td style="color:#666; font-style:italic">${p.category || "Chưa phân loại"}</td>
+                <td>${p.name}</td>
+                <td>${p.unit}</td>
+                <td>${fmt.format(p.qty)}</td>
+                <td>${fmt.format(p.avg)}</td>
+                <td>${fmt.format(preTaxTotal)}</td>
+                <td>${p.tax}%</td>
+                <td>${fmt.format(withTaxTotal)}</td>
+                <td>
+                    <button class="btn-blue" onclick="editProductFull(${idx})">Sửa</button>
+                    <button class="btn-danger" onclick="deleteProduct(${idx})">Xóa</button>
+                </td>
+            </tr>`;
+        }
+    });
+
+    // Cập nhật bảng và tổng cộng
+    document.getElementById("inventoryTable").innerHTML = html;
+    document.getElementById("totalStockQty").innerText = fmt.format(totalQty);
+    document.getElementById("totalStockPreTax").innerText = fmt.format(totalPreTax);
+    document.getElementById("totalStockWithTax").innerText = fmt.format(totalWithTax);
+}
+
+// 1. Cập nhật hàm showNewProductModal để đảm bảo reset nội dung đúng cách
+function showNewProductModal() {
+    let nextNum = 1;
+    if (products.length > 0) {
+        let codes = products.map(p => parseInt(p.itemCode) || 0);
+        nextNum = Math.max(...codes) + 1;
+    }
+    let defaultCode = String(nextNum).padStart(6, '0');
+
+    let html = `<div class="modal-header">THÊM MẶT HÀNG MỚI</div>
+    <div class="modal-body">
+        <div class="edit-form-group"><label>Mã Item:</label><input type="text" id="newPCode" value="${defaultCode}" readonly style="background:#f0f0f0"></div>
+        <div class="edit-form-group"><label>Tên hàng:</label><input type="text" id="newPName" autofocus></div>
+        <div class="edit-form-group">
+            <label>Nhóm hàng:</label>
+            <div style="flex:1; display:flex; gap:5px;">
+                <select id="newPCategory" style="flex:1">${categories.map(c => `<option value="${c}">${c}</option>`).join('')}</select>
+                <button onclick="addNewCategory()" class="btn-blue" style="padding:5px">+ NHÓM MỚI</button>
+            </div>
+        </div>
+        <div class="edit-form-group"><label>ĐVT:</label><input type="text" id="newPUnit" value="tấm"></div>
+        <div class="edit-form-group"><label>Thuế %:</label><input type="number" id="newPTax" value="10"></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-confirm" onclick="submitNewProduct()">LƯU</button>
+        <button onclick="closeModal()">ĐÓNG</button>
+    </div>`;
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "600px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function addNewCategory() {
+    // Lưu lại nội dung hiện tại của modalContent để có thể quay lại nếu nhấn Hủy
+    const currentModalHTML = document.getElementById("modalContent").innerHTML;
+
+    let html = `
+    <div style="
+        width: 350px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        font-family: sans-serif;
+        overflow: hidden;
+        border: 1px solid #eee;
+    ">
+        <div style="background: #2c3e50; color: #fff; padding: 15px; font-size: 16px; font-weight: 600; text-align: center;">
+            📁 Thêm Nhóm Hàng Mới
+        </div>
+
+        <div style="padding: 20px;">
+            <label style="display: block; font-size: 13px; color: #666; margin-bottom: 8px;">Tên nhóm hàng:</label>
+            <input id="newCategoryInput" type="text" placeholder="Ví dụ: Thép tấm, Inox..." 
+                style="width: 100%; padding: 10px; border: 1.5px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; outline: none;">
+            <div id="categoryError" style="color: #e74c3c; font-size: 12px; margin-top: 8px; display: none; font-weight: bold;"></div>
+        </div>
+
+        <div style="display: flex; gap: 10px; padding: 15px; background: #f9f9f9; border-top: 1px solid #eee;">
+            <button id="btnCancelCategory" 
+                style="flex: 1; padding: 10px; border: none; background: #bdc3c7; color: #fff; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                Quay lại
+            </button>
+            <button id="btnSaveCategory" 
+                style="flex: 1; padding: 10px; border: none; background: #27ae60; color: #fff; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                Lưu nhóm
+            </button>
+        </div>
+    </div>`;
+
+    // Thay thế nội dung bên trong modalContent thay vì ghi đè toàn bộ Modal
+    const container = document.getElementById("modalContent");
+    container.innerHTML = html;
+
+    // Gán sự kiện trực tiếp bằng JavaScript để đảm bảo hoạt động 100%
+    document.getElementById("btnCancelCategory").onclick = function() {
+        showNewProductModal(); // Quay lại form thêm hàng
+    };
+
+    document.getElementById("btnSaveCategory").onclick = function() {
+        saveNewCategory();
+    };
+
+    // Auto focus và Enter để lưu
+    setTimeout(() => {
+        let input = document.getElementById("newCategoryInput");
+        input.focus();
+        input.onkeypress = (e) => { if(e.key === "Enter") saveNewCategory(); };
+    }, 100);
+}
+
+function saveNewCategory() {
+    let input = document.getElementById("newCategoryInput");
+    let err = document.getElementById("categoryError");
+    let value = input.value.trim();
+
+    // 1. Kiểm tra rỗng
+    if(!value) {
+        err.innerHTML = "⚠️ Vui lòng nhập tên nhóm!";
+        err.style.display = "block";
+        input.focus();
+        return;
+    }
+
+    // 2. Kiểm tra trùng (không phân biệt hoa thường)
+    let isDuplicate = categories.some(c => c.toLowerCase() === value.toLowerCase());
+    if(isDuplicate) {
+        err.innerHTML = "⚠️ Nhóm này đã tồn tại rồi!";
+        err.style.display = "block";
+        input.style.borderColor = "#e74c3c";
+        input.focus();
+        return;
+    }
+
+    // 3. Tiến hành lưu
+    categories.push(value);
+    if (typeof save === "function") save();
+
+    // 4. HIỆU ỨNG THÀNH CÔNG ĐẸP MẮT (Thay thế alert)
+    const container = document.getElementById("modalContent");
+    container.innerHTML = `
+        <div style="text-align: center; padding: 40px 20px; animation: scaleIn 0.3s ease;">
+            <div style="font-size: 50px; color: #27ae60; margin-bottom: 15px;">✅</div>
+            <div style="font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 5px;">Thành công!</div>
+            <div style="font-size: 14px; color: #7f8c8d;">Đã thêm nhóm: <b>${value}</b></div>
+        </div>
+        <style>
+            @keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        </style>
+    `;
+
+    // 5. Tự động quay lại form sản phẩm sau 1.2 giây
+    setTimeout(() => {
+        showNewProductModal();
+        // Tự động chọn nhóm vừa tạo trong dropdown
+        setTimeout(() => {
+            let select = document.getElementById("newPCategory");
+            if(select) {
+                select.value = value;
+                select.style.border = "2px solid #27ae60";
+                setTimeout(() => select.style.border = "1px solid #ddd", 1500);
+            }
+        }, 100);
+    }, 1200);
+}
+
+function submitNewProduct() {
+    const code = document.getElementById("newPCode").value.trim();
+    const name = document.getElementById("newPName").value.trim();
+    const cat = document.getElementById("newPCategory").value;
+    const unit = document.getElementById("newPUnit").value.trim();
+    const tax = parseFloat(document.getElementById("newPTax").value) || 0;
+
+    // 1. Kiểm tra rỗng tên hàng
+    if (!name) {
+        showProductError("⚠️ Vui lòng nhập Tên hàng!");
+        return;
+    }
+
+    // 2. LOGIC CHẶN TRÙNG: Kiểm tra Tên + ĐVT + Thuế (Không phân biệt hoa thường)
+    const isDuplicate = products.some(p => 
+        p.name.toLowerCase().replace(/\s+/g, '') === name.toLowerCase().replace(/\s+/g, '') &&
+        p.unit.toLowerCase().trim() === unit.toLowerCase().trim() &&
+        p.tax === tax
+    );
+
+    if (isDuplicate) {
+        showProductError(`
+            <div style="color: #c0392b; font-weight: bold; margin-bottom: 5px;">SẢN PHẨM ĐÃ TỒN TẠI</div>
+            <div style="font-size: 13px; color: #666;">
+                Mặt hàng <b>${name}</b> (${unit}) với thuế <b>${tax}%</b> đã có trong danh sách hệ thống.
+            </div>
+        `);
+        return;
+    }
+
+    // 3. Nếu không trùng thì tiến hành thêm mới
+    const newP = {
+        itemCode: code,
+        name: name,
+        category: cat,
+        unit: unit,
+        tax: tax,
+        qty: 0,
+        avg: 0,
+        price: 0
+    };
+
+    products.push(newP);
+    if (typeof save === "function") save();
+
+    // Hiển thị thông báo thành công đẹp mắt
+    const container = document.getElementById("modalContent");
+    container.innerHTML = `
+        <div style="text-align: center; padding: 40px 20px; animation: scaleIn 0.3s ease;">
+            <div style="font-size: 50px; color: #27ae60; margin-bottom: 15px;">🚀</div>
+            <div style="font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 5px;">Đã lưu sản phẩm!</div>
+            <div style="font-size: 13px; color: #7f8c8d;">Mã hàng: <b>${code}</b></div>
+        </div>
+    `;
+
+    setTimeout(() => {
+        closeModal();
+        if (typeof renderInventory === "function") renderInventory();
+    }, 1200);
+}
+
+// Hàm phụ trợ hiển thị lỗi ngay trong Modal thay vì dùng Alert
+function showProductError(msg) {
+    // Tìm hoặc tạo vùng hiển thị lỗi trong modal
+    let errDiv = document.getElementById("productModalError");
+    if (!errDiv) {
+        const body = document.querySelector(".modal-body");
+        errDiv = document.createElement("div");
+        errDiv.id = "productModalError";
+        errDiv.style = "margin-top: 15px; padding: 12px; background: #fdf2f2; border-left: 4px solid #e74c3c; border-radius: 4px; animation: shake 0.4s ease;";
+        body.appendChild(errDiv);
+    }
+    errDiv.innerHTML = msg;
+    errDiv.style.display = "block";
+    
+    // Hiệu ứng rung nhẹ khi có lỗi
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+        @keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    `;
+    document.head.appendChild(style);
+}
+
+function addCustomer() {
+    let html = `
+    <div class="modal-header" style="background:#007bff">KHAI BÁO KHÁCH HÀNG MỚI</div>
+    <div class="modal-body">
+        <div class="edit-form-group"><label>Tên khách hàng:</label><input type="text" id="newCustName" autofocus placeholder="Ví dụ: Anh A"></div>
+        <div class="edit-form-group"><label>Địa chỉ:</label><input type="text" id="newCustAddress" placeholder="Số nhà, đường, phường/xã..."></div>
+        <div class="edit-form-group"><label>Điện thoại:</label><input type="text" id="newCustPhone" placeholder="090x xxx xxx"></div>
+        <div class="edit-form-group"><label>Mã số thuế (nếu có):</label><input type="text" id="newCustTax"></div>
+        <div class="edit-form-group"><label>Số CCCD/CMND:</label><input type="text" id="newCustId"></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-confirm" onclick="saveNewCustomer()">LƯU KHÁCH HÀNG</button>
+        <button onclick="closeModal()">HỦY</button>
+    </div>`;
+
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "520px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function saveNewCustomer() {
+    let name = document.getElementById("newCustName").value.trim();
+    if (!name) return alert("Vui lòng nhập tên khách hàng!");
+    
+    if (customers.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+        return alert("Khách hàng tên này đã tồn tại!");
+    }
+    
+    customers.push({
+        name: name,
+        address: document.getElementById("newCustAddress").value.trim(),
+        phone: document.getElementById("newCustPhone").value.trim(),
+        taxCode: document.getElementById("newCustTax").value.trim(),
+        idNumber: document.getElementById("newCustId").value.trim()
+    });
+    
+    save();
+    closeModal();
+    renderAll();  // cập nhật lại select khách hàng
+}
+
+function addSupplier() {
+    let html = `
+    <div class="modal-header" style="background:#b30000">KHÁI BÁO NHÀ CUNG CẤP MỚI</div>
+    <div class="modal-body">
+        <div class="edit-form-group"><label>Tên nhà cung cấp:</label><input type="text" id="newSuppName" autofocus placeholder="Ví dụ: Công ty Thép XYZ"></div>
+        <div class="edit-form-group"><label>Địa chỉ:</label><input type="text" id="newSuppAddress" placeholder="Số nhà, đường, phường/xã..."></div>
+        <div class="edit-form-group"><label>Điện thoại:</label><input type="text" id="newSuppPhone" placeholder="090x xxx xxx"></div>
+        <div class="edit-form-group"><label>Mã số thuế (nếu có):</label><input type="text" id="newSuppTax"></div>
+        <div class="edit-form-group"><label>Số CCCD/CMND:</label><input type="text" id="newSuppId"></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-confirm" onclick="saveNewSupplier()">LƯU NHÀ CUNG CẤP</button>
+        <button onclick="closeModal()">HỦY</button>
+    </div>`;
+
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "520px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function saveNewSupplier() {
+    let name = document.getElementById("newSuppName").value.trim();
+    if (!name) return alert("Vui lòng nhập tên nhà cung cấp!");
+    
+    if (suppliers.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+        return alert("Nhà cung cấp tên này đã tồn tại!");
+    }
+    
+    suppliers.push({
+        name: name,
+        address: document.getElementById("newSuppAddress").value.trim(),
+        phone: document.getElementById("newSuppPhone").value.trim(),
+        taxCode: document.getElementById("newSuppTax").value.trim(),
+        idNumber: document.getElementById("newSuppId").value.trim()
+    });
+    
+    save();
+    closeModal();
+    renderAll();  // cập nhật lại select NCC
+}
+
+function backupData() { 
+    let b = new Blob([JSON.stringify({products, customers, suppliers, categories, history})], {type:"application/json"}); 
+    let a = document.createElement("a"); 
+    a.href = URL.createObjectURL(b); 
+    a.download="BACKUP_XUANNIEN.json"; 
+    a.click(); 
+}
+
+function restoreData(e) { 
+    let r = new FileReader(); 
+    r.onload = function() { 
+        let d = JSON.parse(r.result); 
+        products = d.products || [];
+        customers = d.customers || [];
+        suppliers = d.suppliers || [];
+        categories = d.categories || ['Chưa phân loại'];
+        history = d.history || [];
+        save(); 
+        alert("Khôi phục dữ liệu thành công!");
+    }; 
+    r.readAsText(e.target.files[0]); 
+}
+
+function handleExport() {
+    const table = document.getElementById("mainReportTable");
+    const typeName = document.getElementById("reportType").options[document.getElementById("reportType").selectedIndex].text;
+    const fromDate = document.getElementById("reportFrom").value;
+    const toDate = document.getElementById("reportTo").value;
+    
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.table_to_sheet(table, { raw: false });
+
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    const colWidths = [];
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+        colWidths.push({ wch: 25 });
+    }
+    ws['!cols'] = colWidths;
+
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+        const address = XLSX.utils.encode_col(C) + "1";
+        if (!ws[address]) continue;
+        if (!ws[address].s) ws[address].s = {};
+        ws[address].s = {
+            font: { bold: true, color: { rgb: "FFFFFF" } },
+            fill: { fgColor: { rgb: "B30000" } },
+            alignment: { horizontal: "center", vertical: "center" },
+            border: {
+                top: { style: "thin" }, bottom: { style: "thin" },
+                left: { style: "thin" }, right: { style: "thin" }
+            }
+        };
+    }
+
+    XLSX.utils.book_append_sheet(wb, ws, "Báo cáo");
+    const fileName = `${typeName.replace(/ /g, "_")}_${fromDate}_den_${toDate}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+}
+
+function deleteHistoryItem(historyId, isPartnerView = false, partnerName = '') {
+
+    // ❌ CHẶN LUÔN nếu không có ID
+    if (!historyId || typeof historyId !== "string") {
+        alert("❌ Dữ liệu cũ không có ID → không thể hủy an toàn!\nHãy nâng cấp dữ liệu trước.");
+        return;
+    }
+
+    // ✅ CHỈ tìm bằng ID duy nhất
+    const idx = history.findIndex(h => h.historyId === historyId);
+
+    if (idx === -1) {
+        alert("❌ Không tìm thấy giao dịch!");
+        return;
+    }
+
+    const item = history[idx];
+
+    if (item.isCancelled) {
+        alert("Giao dịch này đã được hủy trước đó!");
+        return;
+    }
+
+    const isImport = item.type === 'NHẬP';
+    const confirmMsg = isImport 
+        ? `XÁC NHẬN HỦY PHIẾU NHẬP\n\nSản phẩm: ${item.name || item.itemCode}\nSố lượng: ${item.qty}\nGiá nhập: ${fmt.format(item.price || 0)} đ\n\nTồn kho sẽ giảm ${item.qty} sp và giá vốn sẽ được tính lại.`
+        : "Bạn có chắc chắn muốn HỦY giao dịch này không?";
+
+    if (!confirm(confirmMsg)) return;
+
+    // 1. Đánh dấu hủy
+    item.isCancelled = true;
+
+    // 2. Recalculate tồn kho + giá vốn
+    if (item.itemCode) {
+        const product = products.find(p => p.itemCode === item.itemCode);
+        if (product) {
+            recalculateAllProducts();
+        }
+    }
+
+    // 3. Lưu
+    if (typeof save === "function") {
+        save(); 
+    }
+
+    // 4. Reload UI
+    if (isPartnerView && partnerName) {
+        viewPartnerLog(partnerName);
+    } else {
+        renderAll();
+    }
+
+    alert("✅ Đã hủy phiếu thành công!");
+}
+
+function recalculateAllProducts() {
+    // 1. Tạo map tra cứu nhanh (O(1))
+    const productMap = {};
+    products.forEach(p => {
+        p.qty = 0;
+        p.avg = 0;
+        productMap[p.itemCode] = p;
+    });
+
+    // 2. Lọc + sort 1 lần
+    const validHistory = history
+        .filter(h => !h.isCancelled && h.itemCode)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // 3. Duyệt 1 lần duy nhất (O(n))
+    validHistory.forEach(h => {
+        const product = productMap[h.itemCode];
+        if (!product) return;
+
+        const qty = Number(h.qty) || 0;
+
+        // ===== NHẬP =====
+        if (h.type === 'NHẬP') {
+            const price = Number(h.price) || 0;
+
+            const oldQty = product.qty;
+            const oldAvg = product.avg;
+
+            const newQty = oldQty + qty;
+            product.avg = newQty === 0
+                ? 0
+                : ((oldQty * oldAvg) + (qty * price)) / newQty;
+
+            product.qty = newQty;
+        }
+
+        // ===== XUẤT =====
+        else if (h.type === 'XUẤT') {
+            product.qty -= qty;
+        }
+    });
+}
+
+function renderCustomers() {
+    const grid = document.getElementById("customerGrid");
+    const search = document.getElementById("searchCustInput").value.toLowerCase();
+    grid.innerHTML = "";
+
+    // BIẾN TÍCH LŨY: Tổng nợ của toàn bộ khách hàng
+    let totalAllReceivable = 0;
+
+    // Lọc danh sách theo tìm kiếm
+    let filtered = customers.filter(c => c.name.toLowerCase().includes(search));
+
+    // Bước 1: Vòng lặp tính toán nợ cho từng người và cộng dồn vào tổng
+    filtered.forEach(c => {
+        let debt = calcDebt(c.name, 'customer');
+
+        totalAllReceivable += debt; // Cộng dồn nợ của người này vào tổng chung
+
+        let card = document.createElement("div");
+        card.className = "partner-item-card";
+        card.onclick = () => viewPartnerLog(c.name);
+        card.innerHTML = `
+            <div class="partner-name-box">👤 ${c.name}</div>
+            <div style="font-size:12px; color:#666; margin-bottom:10px;">
+                ${c.phone ? '📞 ' + c.phone : 'Chưa có SĐT'}
+            </div>
+            <div class="partner-debt-box">
+                <div class="partner-debt-label">Dư nợ hiện tại</div>
+                <div class="partner-debt-value">${fmt.format(debt)} đ</div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+
+    // Bước 2: Tạo thanh "Tổng nợ phải thu" hiển thị trên cùng
+    const totalBar = document.createElement("div");
+    totalBar.style = `
+        grid-column: 1 / -1; 
+        background: #28a745; 
+        color: white; 
+        padding: 15px; 
+        border-radius: 8px; 
+        margin-bottom: 20px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    `;
+    totalBar.innerHTML = `
+        <span style="font-size: 16px; font-weight: bold;">💰 TỔNG NỢ TẤT CẢ KHÁCH HÀNG:</span>
+        <span style="font-size: 22px; font-weight: 900;">${fmt.format(totalAllReceivable)} đ</span>
+    `;
+    
+    // Đưa thanh tổng cộng lên đầu Grid
+    grid.prepend(totalBar);
+}
+
+function renderSuppliers() {
+    const grid = document.getElementById("supplierGrid");
+    const search = document.getElementById("searchSuppInput").value.toLowerCase();
+    grid.innerHTML = "";
+
+    // BIẾN TÍCH LŨY: Tổng nợ phải trả cho tất cả NCC
+    let totalAllPayable = 0;
+
+    let filtered = suppliers.filter(s => s.name.toLowerCase().includes(search));
+
+    filtered.forEach(s => {
+        let debt = calcDebt(s.name, 'supplier');
+
+        totalAllPayable += debt; // Cộng dồn
+
+        let card = document.createElement("div");
+        card.className = "partner-item-card";
+        card.onclick = () => viewPartnerLog(s.name);
+        card.innerHTML = `
+            <div class="partner-name-box">🚚 ${s.name}</div>
+            <div style="font-size:12px; color:#666; margin-bottom:10px;">
+                ${s.phone ? '📞 ' + s.phone : 'Chưa có SĐT'}
+            </div>
+            <div class="partner-debt-box" style="background: #fff8f0;">
+                <div class="partner-debt-label">Nợ cần trả NCC</div>
+                <div class="partner-debt-value" style="color: #e67e22;">${fmt.format(debt)} đ</div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+
+    // Tạo thanh "Tổng nợ phải trả" hiển thị trên cùng
+    const totalBar = document.createElement("div");
+    totalBar.style = `
+        grid-column: 1 / -1; 
+        background: #e67e22; 
+        color: white; 
+        padding: 15px; 
+        border-radius: 8px; 
+        margin-bottom: 20px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    `;
+    totalBar.innerHTML = `
+        <span style="font-size: 16px; font-weight: bold;">💸 TỔNG NỢ PHẢI TRẢ NCC:</span>
+        <span style="font-size: 22px; font-weight: 900;">${fmt.format(totalAllPayable)} đ</span>
+    `;
+    
+    grid.prepend(totalBar);
+}
+
+// 1. Hàm hiển thị bảng xác nhận xóa dữ liệu
+function showSecureClearModal() {
+    let html = `
+    <div class="modal-header" style="background:#dc3545; color:white;">⚠️ CẢNH BÁO NGUY HIỂM</div>
+    <div class="modal-body">
+        <div class="danger-box">
+            <b>HÀNH ĐỘNG NÀY KHÔNG THỂ PHỤC HỒI!</b><br>
+            Tất cả dữ liệu về Sản phẩm, Khách hàng, Nhà cung cấp, Lịch sử kho và Sổ quỹ sẽ bị xóa sạch hoàn toàn.
+        </div>
+        <p>Vui lòng nhập mật khẩu xác nhận để thực hiện:</p>
+        <input type="password" id="clearDataPass" placeholder="Nhập mật khẩu..." style="width:100%; padding:10px; border:1px solid #ccc;">
+    </div>
+    <div class="modal-footer">
+        <button class="btn-danger" onclick="confirmClearAllData()">XÁC NHẬN XÓA TẤT CẢ</button>
+        <button onclick="closeModal()">HỦY BỎ</button>
+    </div>`;
+    
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("modalContent").style.maxWidth = "450px";
+    document.getElementById("previewModal").style.display = "block";
+}
+
+// 2. Hàm thực thi việc xóa sạch localStorage
+function confirmClearAllData() {
+    let pass = document.getElementById("clearDataPass").value;
+    if (pass === "123456") { // Bạn có thể đổi mật khẩu này theo ý muốn
+        if (confirm("Bạn có chắc chắn 100% muốn xóa sạch toàn bộ dữ liệu không?")) {
+            localStorage.clear();
+            alert("Đã xóa toàn bộ dữ liệu. Trang web sẽ khởi động lại.");
+            location.reload();
+        }
+    } else {
+        alert("Mật khẩu không chính xác!");
+    }
+}
+
+// ===== DÁN 2 HÀM CHUYỂN QUỸ Ở ĐÂY =====
+function showTransferFundModal() {
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    const timeStr = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+
+    let html = `
+    <div class="modal-header" style="background:#6f42c1">CHUYỂN QUỸ</div>
+    <div class="modal-body">
+
+        <div class="edit-form-group">
+            <label>Từ quỹ:</label>
+            <select id="cfFromFund">
+                <option value="cash">Tiền mặt</option>
+                <option value="bank">Ngân hàng</option>
+            </select>
+        </div>
+
+        <div class="edit-form-group">
+            <label>Sang quỹ:</label>
+            <select id="cfToFund">
+                <option value="bank">Ngân hàng</option>
+                <option value="cash">Tiền mặt</option>
+            </select>
+        </div>
+
+        <div class="edit-form-group">
+            <label>Số tiền:</label>
+            <input type="text" id="cfTransferAmt" oninput="formatInput(this)">
+        </div>
+
+        <div class="edit-form-group">
+            <label>Nội dung:</label>
+            <input type="text" id="cfTransferNote">
+        </div>
+
+        <div class="edit-form-group">
+            <label>Thời gian:</label>
+            <input type="text" value="${timeStr} ${fmtDate(dateStr)}" readonly>
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn-confirm" onclick="submitTransferFund('${dateStr}', '${timeStr}')">THỰC HIỆN</button>
+        <button onclick="closeModal()">HỦY</button>
+    </div>`;
+
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("previewModal").style.display = "block";
+}
+
+function submitTransferFund(date, time) {
+    const fromFund = document.getElementById("cfFromFund").value;
+    const toFund = document.getElementById("cfToFund").value;
+    const amount = parseVN(document.getElementById("cfTransferAmt").value);
+    const note = document.getElementById("cfTransferNote").value.trim();
+
+    if (fromFund === toFund) return alert("Hai quỹ phải khác nhau!");
+    if (amount <= 0) return alert("Vui lòng nhập số tiền!");
+
+    const baseId = Date.now();
+
+    cashflow.push({
+        id: "CT" + baseId,
+        type: 'chi',
+        category: 'Chuyển quỹ',
+        note: note || 'Chuyển quỹ',
+        amount: amount,
+        fund: fromFund,
+        date: date,
+        time: time,
+        fullDate: new Date().toISOString()
+    });
+
+    cashflow.push({
+        id: "TT" + baseId,
+        type: 'thu',
+        category: 'Chuyển quỹ',
+        note: note || 'Chuyển quỹ',
+        amount: amount,
+        fund: toFund,
+        date: date,
+        time: time,
+        fullDate: new Date().toISOString()
+    });
+
+    localStorage.setItem("cashflow", JSON.stringify(cashflow));
+
+    closeModal();
+    renderCashFlow();
+}
+
+function autoBackup() {
+    // Chỉ chạy backup tự động nếu đã qua 5 phút kể từ lần cuối
+    const lastBackup = localStorage.getItem("lastAutoBackup") || 0;
+    const now = Date.now();
+    
+    if (now - lastBackup > 5 * 60 * 1000) {   // 5 phút
+        syncToGoogle();
+        localStorage.setItem("lastAutoBackup", now);
+    }
+}
+
+if(document.getElementById("multiImportBody").children.length === 0) addRowImport();
+if(document.getElementById("multiSaleBody").children.length === 0) addRowSale();
+upgradeHistoryId();
+initDB();
+renderAll();
+
+setInterval(() => {
+    autoBackup();
+}, 1000 * 60 * 5);
+
+["cfFrom", "cfTo"].forEach(id => {
+    if (document.getElementById(id) && !document.getElementById(id).value) {
+        document.getElementById(id).value = new Date().toISOString().split('T')[0];
+    }
+});
+
+// ===== AUTO SAVE CHỐNG MẤT DỮ LIỆU =====
+
+// Tự động save mỗi 5 giây
+setInterval(() => {
+    if (typeof save === "function") save();
+}, 5000);
+
+// Khi tắt web vẫn lưu
+window.addEventListener("beforeunload", function () {
+    if (typeof save === "function") save();
+});
+</script>
+</body>
+</html>
