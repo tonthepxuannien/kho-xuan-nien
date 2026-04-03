@@ -3083,14 +3083,7 @@ setInterval(() => {
         document.getElementById(id).value = new Date().toISOString().split('T')[0];
     }
 });
-
-// ===== AUTO SAVE CHỐNG MẤT DỮ LIỆU =====
-
-// Tự động save mỗi 5 giây
-setInterval(() => {
-    if (typeof save === "function") save();
-}, 5000);
-
+	
 // Khi tắt web vẫn lưu
 window.addEventListener("beforeunload", function () {
     if (typeof save === "function") save();
