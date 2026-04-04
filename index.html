@@ -472,32 +472,28 @@ function syncToGoogle() {
     fetch("https://script.google.com/macros/s/AKfycbx_uaGtpMajiuxV2INF0nrg8qpjANL2fDEC4egnEhkLKNYRdMqWyqF1q4fdjyQeXcuj/exec", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "text/plain;charset=utf-8"
         },
         body: JSON.stringify(payload)
     })
     .then(res => res.text())
-    .then(res => console.log("✅ Backup OK:", res))
-    .catch(err => console.error("❌ Lỗi:", err));
-        
-        // Thông báo đẹp cho người dùng
+    .then(res => {
+        console.log("✅ Backup OK:", res);
+
         showSimpleWarning(`
             ✅ <b>Backup đã được lưu lên Google Drive thành công!</b><br><br>
-            📁 Thư mục: <b>Kho Xuan Nien Backups</b><br>
-            🕒 Thời gian: ${new Date().toLocaleString('vi-VN')}<br><br>
-            Bạn có thể mở Google Drive để tải file backup bất cứ lúc nào.
+            🕒 Thời gian: ${new Date().toLocaleString('vi-VN')}
         `);
     })
     .catch(err => {
         console.error("❌ Lỗi khi gửi backup:", err);
-        
-        // Fallback: Tải file về máy nếu gửi Drive thất bại
-        backupData();
-        
+
+        // fallback tải về máy
+        if (typeof backupData === "function") backupData();
+
         showSimpleWarning(`
             ⚠️ Không gửi được backup lên Drive.<br>
-            Đã tự động tải file backup về máy tính của bạn.<br><br>
-            Vui lòng kiểm tra thư mục Downloads.
+            Đã tải file về máy!
         `);
     });
 }
