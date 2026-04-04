@@ -456,7 +456,7 @@ function syncToGoogle() {
         return;
     }
 
-    console.log("🔄 Đang tạo backup và gửi lên Google Drive...");
+    console.log("🔄 Đang backup...");
 
     const payload = {
         products: products || [],
@@ -465,8 +465,7 @@ function syncToGoogle() {
         categories: categories || [],
         history: history || [],
         cashflow: cashflow || [],
-        timestamp: new Date().toISOString(),
-        version: "7.16"
+        timestamp: new Date().toISOString()
     };
 
     fetch("https://script.google.com/macros/s/AKfycbx_uaGtpMajiuxV2INF0nrg8qpjANL2fDEC4egnEhkLKNYRdMqWyqF1q4fdjyQeXcuj/exec", {
@@ -478,21 +477,10 @@ function syncToGoogle() {
     })
     .then(res => res.text())
     .then(res => {
-        console.log("✅ Backup OK:", res);
-
-        showSimpleWarning(`
-            ✅ <b>Backup thành công!</b><br>
-            🕒 ${new Date().toLocaleString('vi-VN')}
-        `);
+        console.log("✅ Backup OK");
     })
     .catch(err => {
-        console.error("❌ Lỗi khi gửi backup:", err);
-
-        if (typeof backupData === "function") backupData();
-
-        showSimpleWarning(`
-            ⚠️ Không gửi được Drive → đã lưu về máy
-        `);
+        console.error("❌ Backup lỗi:", err);
     });
 }
 	
