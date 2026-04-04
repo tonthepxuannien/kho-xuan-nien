@@ -481,23 +481,21 @@ function syncToGoogle() {
         console.log("✅ Backup OK:", res);
 
         showSimpleWarning(`
-            ✅ <b>Backup đã được lưu lên Google Drive thành công!</b><br><br>
-            🕒 Thời gian: ${new Date().toLocaleString('vi-VN')}
+            ✅ <b>Backup thành công!</b><br>
+            🕒 ${new Date().toLocaleString('vi-VN')}
         `);
     })
     .catch(err => {
         console.error("❌ Lỗi khi gửi backup:", err);
 
-        // fallback tải về máy
         if (typeof backupData === "function") backupData();
 
         showSimpleWarning(`
-            ⚠️ Không gửi được backup lên Drive.<br>
-            Đã tải file về máy!
+            ⚠️ Không gửi được Drive → đã lưu về máy
         `);
     });
 }
-
+	
 let cashflow = JSON.parse(localStorage.getItem("cashflow") || "[]");
 let products = JSON.parse(localStorage.getItem("products")||"[]");
 let customers = JSON.parse(localStorage.getItem("customers")||"[]");
