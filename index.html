@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>KHO XUÂN NIÊN V7.16 - QUẢN LÝ KHO & BÁO CÁO CHUYÊN NGHIỆP</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f4f4f4; font-size: 13px; color: #333; }
         header { background: #b30000; color: white; text-align: center; padding: 10px; }
@@ -92,69 +91,6 @@
             .modal-content { box-shadow: none; margin: 0; width: 100%; max-width: 100%; border: none; }
             .modal-header, .modal-footer, #imP, #btn-final-import, #btn-back-import, #paidAmount, #btn-final-sale { display: none !important; }
             .invoice-box { border: none; }
-			
-		/* ===== MOBILE APP STYLE ===== */
-        @media (max-width: 768px) {
-			nav {
-                overflow-x: auto;
-            }
-
-            nav button {
-                min-width: 100px;
-                font-size: 14px;
-            }
-
-            body {
-               font-size: 18px;
-               padding: 10px;
-               background: #f5f5f5;
-           }
-
-           /* Ẩn bớt thứ rườm rà desktop */
-           .desktop-only {
-               display: none !important;
-           }
-
-           /* Card kiểu app */
-           .card {
-               background: #fff;
-               border-radius: 12px;
-               padding: 12px;
-               margin-bottom: 10px;
-               box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-           }
-
-           /* Input & button to, dễ bấm */
-           input, select, button {
-               width: 100%;
-               font-size: 18px;
-               padding: 10px;
-               margin-bottom: 8px;
-               border-radius: 8px;
-           }
-
-           button {
-               background: #e53935;
-               color: white;
-               border: none;
-               font-weight: bold;
-           }
-
-           /* Bảng chuyển thành dạng cuộn */
-           table {
-               display: block;
-               overflow-x: auto;
-               white-space: nowrap;
-               background: #fff;
-               border-radius: 10px;
-           }
-
-           /* Header gọn lại */
-           h1, h2 {
-               font-size: 20px;
-               text-align: center;
-           }
-		}
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -163,6 +99,7 @@
 <header><h2>KHO HÓA ĐƠN XUÂN NIÊN</h2></header>
 
 <nav>
+    <button class="nav-btn" onclick="showTab('overview')">📊 TỔNG QUAN</button>
     <button class="tab active" onclick="openTab('kho',this)">Tồn kho</button>
     <button class="tab" onclick="openTab('xuat',this)">Xuất bán</button>
     <button class="tab" onclick="openTab('nhap',this)">Nhập hàng</button>
@@ -219,7 +156,7 @@
         <table id="multiImportTable">
             <thead>
                 <tr>
-                    <th style="width: 450px;">Mã Item - Tên hàng - ĐVT - Thuế</th>
+                    <th style="width: 450px;">Tên hàng</th>
                     <th style="width: 80px;">ĐVT</th>
                     <th>SL nhập</th>
                     <th>Giá nhập (chưa thuế)</th>
@@ -250,7 +187,7 @@
         <table id="multiSaleTable">
             <thead>
                 <tr>
-                    <th style="width: 450px;">Mã Item - Tên hàng (Chọn từ kho)</th>
+                    <th style="width: 450px;">Mã Item - Tên hàng (Chọn từ tồn kho)</th>
                     <th style="width: 80px;">ĐVT</th>
                     <th>SL xuất</th>
                     <th>Giá bán (chưa thuế)</th>
@@ -269,12 +206,12 @@
     <div class="report-controls">
         <div style="font-weight: bold; color: #b30000; margin-right: 10px;">BỘ LỌC THỜI GIAN:</div>
         <select id="quickDateSelect" onchange="setQuickDate(this.value)" style="width:150px; font-weight:bold; color:#007bff;">
-            <option value="">-- Tùy chỉnh --</option>
             <option value="today">Hôm nay</option>
             <option value="yesterday">Hôm qua</option>
             <option value="thisMonth">Tháng này</option>
             <option value="lastMonth">Tháng trước</option>
             <option value="thisYear">Năm nay</option>
+            <option value="">-- Tùy chỉnh --</option>
         </select>
         Từ ngày: <input type="date" id="reportFrom">
         Đến ngày: <input type="date" id="reportTo">
@@ -349,41 +286,17 @@
 </section>
 
 <section id="chiphi">
-    <div class="report-summary-grid" style="margin-bottom: 20px;">
-        <div class="summary-box orange" style="cursor:pointer;" onclick="filterFund('all')">
-            <div class="summary-label">TỔNG QUỸ HỢP NHẤT</div>
-            <div class="summary-value" id="totalFund">0 ₫</div>
-        </div>
-        <div class="summary-box green" style="cursor:pointer;" onclick="filterFund('cash')">
-            <div class="summary-label">TỔNG QUỸ TIỀN MẶT</div>
-            <div class="summary-value" id="totalCash">0 ₫</div>
-        </div>
-        <div class="summary-box blue" style="cursor:pointer;" onclick="filterFund('bank')">
-            <div class="summary-label">TỔNG QUỸ NGÂN HÀNG</div>
-            <div class="summary-value" id="totalBank">0 ₫</div>
-        </div>
-    </div>
-
-    <div id="fundDetailArea" class="card" style="display:none; background: #f9f9f9; border-left: 5px solid #666;">
-        <b id="fundDetailTitle">CHI TIẾT QUỸ</b>
-        <div style="display: flex; gap: 30px; margin-top: 10px;">
-            <div style="color: #28a745;">Thu trong kỳ: <b id="periodIncome">0</b></div>
-            <div style="color: #dc3545;">Chi trong kỳ: <b id="periodExpense">0</b></div>
-            <div style="color: #333;">Tồn quỹ hiện tại: <b id="periodBalance">0</b></div>
-        </div>
-    </div>
-
     <div class="report-controls" style="justify-content: space-between; flex-wrap: wrap; gap: 12px;">
         <div>
             <b>Tìm theo ngày:</b><br>
             <select id="quickCashflowDate" onchange="setQuickDateCashflow(this.value)" style="padding:8px; font-weight:bold; color:#007bff; margin-right:10px;">
-                <option value="all">Toàn thời gian</option>
                 <option value="today">Hôm nay</option>
                 <option value="yesterday">Hôm qua</option>
                 <option value="thisMonth">Tháng này</option>
                 <option value="lastMonth">Tháng trước</option>
                 <option value="thisYear">Năm nay</option>
                 <option value="lastYear">Năm trước</option>
+                <option value="all">Toàn thời gian</option>
             </select>
         
             Từ <input type="date" id="cfFrom" onchange="renderCashFlow()"> 
@@ -394,6 +307,30 @@
             <button class="btn-confirm" onclick="showAddCashFlowModal('thu')">+ LẬP PHIẾU THU</button>
             <button class="btn-info" style="background: #17a2b8; color: white;" onclick="showTransferModal()">⇄ CHUYỂN QUỸ</button>
             <button class="btn-danger" onclick="showAddCashFlowModal('chi')">+ LẬP PHIẾU CHI</button>
+        </div>
+    </div>
+
+    <div class="report-summary-grid" style="margin-bottom: 20px;">
+        <div class="summary-box orange" style="cursor:pointer;" onclick="filterFund('all')">
+            <div class="summary-label">TỔNG QUỸ</div>
+            <div class="summary-value" id="totalFund">0 ₫</div>
+        </div>
+        <div class="summary-box green" style="cursor:pointer;" onclick="filterFund('cash')">
+            <div class="summary-label">QUỸ TIỀN MẶT</div>
+            <div class="summary-value" id="totalCash">0 ₫</div>
+        </div>
+        <div class="summary-box blue" style="cursor:pointer;" onclick="filterFund('bank')">
+            <div class="summary-label">QUỸ NGÂN HÀNG</div>
+            <div class="summary-value" id="totalBank">0 ₫</div>
+        </div>
+    </div>
+
+    <div id="fundDetailArea" class="card" style="display:none; background: #f9f9f9; border-left: 5px solid #666;">
+        <b id="fundDetailTitle">CHI TIẾT QUỸ</b>
+        <div style="display: flex; gap: 30px; margin-top: 10px;">
+            <div style="color: #28a745;">Thu trong kỳ: <b id="periodIncome">0</b></div>
+            <div style="color: #dc3545;">Chi trong kỳ: <b id="periodExpense">0</b></div>
+            <div style="color: #333;">Tồn quỹ hiện tại: <b id="periodBalance">0</b></div>
         </div>
     </div>
 
@@ -456,7 +393,7 @@ function syncToGoogle() {
         return;
     }
 
-    console.log("🔄 Đang backup...");
+    console.log("🔄 Đang tạo backup và gửi lên Google Drive...");
 
     const payload = {
         products: products || [],
@@ -465,25 +402,47 @@ function syncToGoogle() {
         categories: categories || [],
         history: history || [],
         cashflow: cashflow || [],
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        version: "7.16"
     };
 
     fetch("https://script.google.com/macros/s/AKfycbx_uaGtpMajiuxV2INF0nrg8qpjANL2fDEC4egnEhkLKNYRdMqWyqF1q4fdjyQeXcuj/exec", {
         method: "POST",
+        redirect: "follow",
         headers: {
-            "Content-Type": "text/plain;charset=utf-8"
+            "Content-Type": "text/plain;charset=utf-8"   // Dùng text/plain để tránh lỗi CORS
         },
         body: JSON.stringify(payload)
     })
-    .then(res => res.text())
-    .then(res => {
-        console.log("✅ Backup OK");
+    .then(response => {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.text();
+    })
+    .then(text => {
+        console.log("✅ Backup gửi thành công:", text);
+        
+        // Thông báo đẹp cho người dùng
+        showSimpleWarning(`
+            ✅ <b>Backup đã được lưu lên Google Drive thành công!</b><br><br>
+            📁 Thư mục: <b>Kho Xuan Nien Backups</b><br>
+            🕒 Thời gian: ${new Date().toLocaleString('vi-VN')}<br><br>
+            Bạn có thể mở Google Drive để tải file backup bất cứ lúc nào.
+        `);
     })
     .catch(err => {
-        console.error("❌ Backup lỗi:", err);
+        console.error("❌ Lỗi khi gửi backup:", err);
+        
+        // Fallback: Tải file về máy nếu gửi Drive thất bại
+        backupData();
+        
+        showSimpleWarning(`
+            ⚠️ Không gửi được backup lên Drive.<br>
+            Đã tự động tải file backup về máy tính của bạn.<br><br>
+            Vui lòng kiểm tra thư mục Downloads.
+        `);
     });
 }
-	
+
 let cashflow = JSON.parse(localStorage.getItem("cashflow") || "[]");
 let products = JSON.parse(localStorage.getItem("products")||"[]");
 let customers = JSON.parse(localStorage.getItem("customers")||"[]");
@@ -524,48 +483,43 @@ document.getElementById("searchSuppInput").addEventListener("input", function() 
 
 const fmt = new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 3 });
 
-function calcDebt(partnerName, type) {
-    return history
-        .filter(h => h.partner === partnerName && !h.isCancelled)
-        .reduce((sum, h) => {
-            let change = 0;
-
-            if (type === 'customer') {
-                if (h.type === 'XUẤT') change = h.amount;
-                else if (h.isPayment) change = -h.amount;
-            }
-
-            else if (type === 'supplier') {
-                if (h.type === 'NHẬP') change = h.amount;
-                else if (h.isPayment) change = -h.amount;
-            }
-
-            return sum + change;
-        }, 0);
-}
-
 function buildDebtCache() {
     const map = {};
 
     history.forEach(h => {
-        if (h.isCancelled || !h.partner) return;
+        if (h.isCancelled) return;
 
-        if (!map[h.partner]) {
-            map[h.partner] = {
+        // 🔥 KEY CHUẨN
+        const key = h.partnerId || h.partner;
+        if (!key) return;
+
+        if (!map[key]) {
+            map[key] = {
                 customer: 0,
                 supplier: 0
             };
         }
 
+        const amt = Number(h.amount) || 0;
+
+        // ===== KHÁCH HÀNG =====
         if (h.type === 'XUẤT') {
-            map[h.partner].customer += h.amount;
-        } 
+            map[key].customer += amt;
+        }
+
+        // ===== NHÀ CUNG CẤP =====
         else if (h.type === 'NHẬP') {
-            map[h.partner].supplier += h.amount;
-        } 
+            map[key].supplier += amt;
+        }
+
+        // ===== THANH TOÁN =====
         else if (h.isPayment) {
-            map[h.partner].customer -= h.amount;
-            map[h.partner].supplier -= h.amount;
+            if (h.type === 'THU_NO') {
+                map[key].customer -= amt;
+            } 
+            else if (h.type === 'TRA_NO') {
+                map[key].supplier -= amt;
+            }
         }
     });
 
@@ -671,7 +625,7 @@ function save() {
     localStorage.setItem("customers", JSON.stringify(customers));
     localStorage.setItem("suppliers", JSON.stringify(suppliers));
     localStorage.setItem("categories", JSON.stringify(categories));
-    syncToGoogle();
+    localStorage.setItem("cashflow", JSON.stringify(cashflow));
 }
 
 function openTab(id, btn) {
@@ -803,9 +757,9 @@ function confirmDeleteProduct(idx) {
     }
 }
 
-function editPartnerFullInfo(name, isSupplier = false) {
+function editPartnerFullInfo(partnerId, isSupplier = false) {
     const arrayRef = isSupplier ? suppliers : customers;
-    const partner = arrayRef.find(p => p.name === name);
+    const partner = arrayRef.find(p => p.id === partnerId);
     if (!partner) return alert("Không tìm thấy đối tác!");
 
     let html = `
@@ -823,7 +777,7 @@ function editPartnerFullInfo(name, isSupplier = false) {
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn-confirm" onclick="savePartnerFullInfo('${name}', ${isSupplier})">LƯU THAY ĐỔI</button>
+        <button class="btn-confirm" onclick="savePartnerFullInfo('${partnerId}', ${isSupplier})">LƯU THAY ĐỔI</button>
         <button onclick="closeModal()">HỦY</button>
     </div>`;
 
@@ -832,45 +786,44 @@ function editPartnerFullInfo(name, isSupplier = false) {
     document.getElementById("previewModal").style.display = "block";
 }
 
-function savePartnerFullInfo(oldName, isSupplier) {
+function savePartnerFullInfo(partnerId, isSupplier) {
     const newName = document.getElementById("editName").value.trim();
     if (!newName) return alert("Tên không được để trống!");
 
     const arrayRef = isSupplier ? suppliers : customers;
 
-    if (arrayRef.some(p => p.name === newName && p.name !== oldName)) {
-        return alert("Tên này đã tồn tại trong danh sách!");
+    // ⚠️ Chỉ cảnh báo trùng tên (không chặn)
+    if (arrayRef.some(p => p.name === newName && p.id !== partnerId)) {
+        if (!confirm("Tên này đã tồn tại, bạn vẫn muốn lưu?")) return;
     }
 
-    const idx = arrayRef.findIndex(p => p.name === oldName);
-    if (idx !== -1) {
-        arrayRef[idx].name = newName;
-        arrayRef[idx].address = document.getElementById("editAddress").value.trim();
-        arrayRef[idx].phone = document.getElementById("editPhone").value.trim();
-        arrayRef[idx].taxCode = document.getElementById("editTaxCode").value.trim();
-        arrayRef[idx].idNumber = document.getElementById("editIdNumber").value.trim();
-    }
+    // 🔥 TÌM THEO ID (chuẩn)
+    const partner = arrayRef.find(p => String(p.id) === String(partnerId));
+    if (!partner) return alert("Không tìm thấy đối tác!");
 
-    if (newName !== oldName) {
-        history.forEach(h => {
-            if (h.partner === oldName) h.partner = newName;
-        });
-    }
+    // ✅ CẬP NHẬT THÔNG TIN
+    partner.name = newName;
+    partner.address = document.getElementById("editAddress").value.trim();
+    partner.phone = document.getElementById("editPhone").value.trim();
+    partner.taxCode = document.getElementById("editTaxCode").value.trim();
+    partner.idNumber = document.getElementById("editIdNumber").value.trim();
+
+    // ❌ KHÔNG đụng history nữa (vì đã dùng partnerId)
 
     save();
     closeModal();
 
-    if (document.querySelector(".modal-header")?.innerText.includes(oldName)) {
-        viewPartnerLog(newName);
-    }
+    // ✅ reload theo ID
+    viewPartnerLog(partnerId);
 }
 
-function viewPartnerLog(name) {
-    let isSupp = suppliers.some(s => s.name === name);
-    let partner = (isSupp ? suppliers : customers).find(p => p.name === name) || {name};
+function viewPartnerLog(partnerId) {
+    let isSupp = suppliers.some(s => s.id === partnerId);
+    let partner = (isSupp ? suppliers : customers)
+        .find(p => p.id === partnerId) || { name: "Không xác định" };
 
     // 1. SẮP XẾP LỊCH SỬ CHUẨN: Theo Ngày và Giờ (để tính nợ lũy kế đúng trình tự thời gian)
-    let logs = history.filter(h => h.partner === name)
+    let logs = history.filter(h => h.partnerId === partnerId)
                       .sort((a, b) => {
                           let dtA = new Date(a.date + ' ' + (a.time || '00:00'));
                           let dtB = new Date(b.date + ' ' + (b.time || '00:00'));
@@ -905,9 +858,9 @@ function viewPartnerLog(name) {
     <div style="display: flex; flex-direction: column; height: 88vh;">
         <div style="flex-shrink: 0;">
             <div class="modal-header" style="background:${isSupp ? '#b30000' : '#007bff'}; margin:0;">
-                ${isSupp ? 'NHÀ CUNG CẤP' : 'KHÁCH HÀNG'}: ${name}
+                ${isSupp ? 'NHÀ CUNG CẤP' : 'KHÁCH HÀNG'}: ${partner.name}
                 <button class="btn-blue" style="float:right; margin:-3px 0 0 15px; padding:6px 12px;" 
-                        onclick="editPartnerFullInfo('${name}', ${isSupp})">✏️ Sửa thông tin</button>
+                        onclick="editPartnerFullInfo('${partnerId}', ${isSupp})">✏️ Sửa thông tin</button>
             </div>
             
             <div style="background:#f8f9fa; padding:12px; border-bottom:1px solid #ddd; font-size:14px; line-height:1.4; display:flex; justify-content:space-between; align-items:center;">
@@ -932,7 +885,7 @@ function viewPartnerLog(name) {
                         <option value="Chuyển khoản">Chuyển khoản</option>
                     </select>
                     <input type="text" id="innerPayMoney" placeholder="Số tiền..." oninput="formatInput(this)" style="width: 150px; font-weight: bold; padding:5px;">
-                    <button onclick="partnerPayDebtInner('${name}', ${isSupp})" class="btn-confirm" style="margin:0">XÁC NHẬN</button>
+                    <button onclick="partnerPayDebtInner('${partnerId}', ${isSupp})" class="btn-confirm" style="margin:0">XÁC NHẬN</button>
                 </div>
             </div>
 
@@ -964,7 +917,7 @@ function viewPartnerLog(name) {
                             </thead>
                             <tbody>
                                 ${dayLogs.map(l => {
-                                    let targetId = l.historyId || history.findIndex(h => h.date === l.date && h.partner === l.partner && h.amount === l.amount && h.time === l.time);
+                                    let targetId = l.historyId
                                     const isVoid = l.isCancelled === true;
                                     const styleLine = isVoid ? 'text-decoration:line-through; color:#aaa; background:#f9f9f9' : '';
 
@@ -975,7 +928,7 @@ function viewPartnerLog(name) {
                                         <td style="text-align:right; font-weight:bold">${fmt.format(l.amount)}</td>
                                         <td style="text-align:right; color:#b30000; font-weight:bold">${fmt.format(l.currentAccumulated)}</td>
                                         <td>
-                                            ${isVoid ? '---' : `<button class="btn-danger" style="padding:2px 8px;" onclick="deleteHistoryItem('${targetId}', true, '${name}')">Hủy</button>`}
+                                            ${isVoid ? '---' : `<button class="btn-danger" style="padding:2px 8px;" onclick="deleteHistoryItem('${targetId}', true, '${partnerId}')">Hủy</button>`}
                                         </td>
                                     </tr>`;
                                 }).join('')}
@@ -1413,30 +1366,48 @@ function confirmDeleteCashflow(idx) {
     }
 }
 
-function partnerPayDebtInner(name, isSupp) {
+function partnerPayDebtInner(partnerId, isSupp) {
     let amount = parseVN(document.getElementById("innerPayMoney").value);
     let date = document.getElementById("innerPayDate").value;
     let method = document.getElementById("innerPayMethod").value;
-    if(amount <= 0) return alert("Vui lòng nhập số tiền hợp lệ");
-    if(!date) return alert("Vui lòng chọn ngày");
-    
+
+    if (amount <= 0) return alert("Vui lòng nhập số tiền hợp lệ");
+    if (!date) return alert("Vui lòng chọn ngày");
+
+    // 🔥 TÌM ĐÚNG THEO ID
+    const obj = isSupp 
+        ? suppliers.find(s => s.id === partnerId)
+        : customers.find(c => c.id === partnerId);
+
+    if (!obj) return alert("Không tìm thấy đối tác!");
+
     let type = isSupp ? 'TRA_NO' : 'THU_NO';
     let label = isSupp ? 'Trả nợ NCC' : 'Thu nợ khách hàng';
 
     history.push({ 
-        historyId: Date.now().toString() + Math.random().toString(16).slice(2),
+        historyId: "PAY-" + Date.now() + "-" + Math.random().toString(16).slice(2),
+
         date, 
-        time: new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}),
-        partner: name, 
+        time: new Date().toLocaleTimeString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit'
+        }),
+
+        // ✅ CHUẨN HÓA THEO ID
+        partner: obj.name,      // chỉ để hiển thị
+        partnerId: partnerId,   // 🔥 CỐT LÕI
+
         type: type, 
         name: `${label} (${method})`, 
         amount: amount, 
         method: method,
-        isPayment: true,
-        historyId: "PAY-" + Date.now()     // ← Thêm dòng này
+        isPayment: true
     });
+
     save();
-    viewPartnerLog(name);
+
+    // ✅ LOAD LẠI ĐÚNG
+    viewPartnerLog(partnerId);
 }
 
 function editProductFull(idx) {
@@ -1684,7 +1655,8 @@ function finalImport() {
     let ncc = document.getElementById("supplierSelect").value;
     let date = document.getElementById("importDate").value;
 
-    // Kiểm tra dữ liệu đầu vào
+    const suppObj = suppliers.find(s => s.id === ncc);
+
     if (!ncc) {
         alert("Vui lòng chọn Nhà cung cấp!");
         return;
@@ -1698,19 +1670,19 @@ function finalImport() {
         return;
     }
 
-    // Tạo thời gian hiện tại
     const now = new Date();
     const currentTime = now.getHours().toString().padStart(2, '0') + ':' + 
                        now.getMinutes().toString().padStart(2, '0');
 
     const importId = "IMP-" + Date.now();
 
-    // Cập nhật kho và ghi lịch sử cho từng mặt hàng
+    // ===== HÀNG NHẬP =====
     importPending.forEach(i => {
         let p = products.find(prod => prod.itemCode === i.itemCode);
         if (p) {
             let oldVal = p.qty * p.avg;
             p.qty += i.qty;
+
             if (p.qty > 0) {
                 p.avg = (oldVal + (i.qty * i.price)) / p.qty;
             }
@@ -1718,34 +1690,39 @@ function finalImport() {
             let amountWithTax = i.preTax + (i.taxVal || 0);
 
             history.push({
-                historyId: Date.now().toString() + Math.random().toString(16).slice(2),
+                historyId: importId + "-" + i.itemCode + "-" + Date.now(),
                 ...i,
                 date: date,
-                time: currentTime,                    // ← Đã sửa đúng
+                time: currentTime,
+
+                // 🔥 CHUẨN
                 partner: ncc,
+                partnerId: suppObj ? suppObj.id : null,
+
                 type: 'NHẬP',
                 amount: amountWithTax,
-                historyId: importId + "-ITEM"
             });
         }
     });
 
-    // Ghi lịch sử thanh toán
+    // ===== THANH TOÁN =====
     history.push({
-        historyId: Date.now().toString() + Math.random().toString(16).slice(2),
+        historyId: importId + "-PAY-" + Date.now(),
         date: date,
-        time: currentTime,                            // ← Đã sửa đúng
+        time: currentTime,
+
+        // 🔥 CHUẨN
         partner: ncc,
+        partnerId: suppObj ? suppObj.id : null,
+
         type: 'TRA_NO',
         name: `Thanh toán nhập hàng (${method})`,
         amount: paid,
         method: method,
         isPayment: true,
         invoiceNo: (importPending[0] ? importPending[0].invoiceNo + "-TT" : "TT-" + Date.now()),
-        historyId: importId + "-PAY"
     });
 
-    // Thay nút xác nhận bằng nút in + đóng
     const modalActions = document.getElementById("modal-actions-import");
     if (modalActions) {
         modalActions.innerHTML = `
@@ -1904,7 +1881,8 @@ function finalSale() {
     let cust = document.getElementById("saleCustomer").value;
     let date = document.getElementById("saleDate").value;
 
-    // Kiểm tra dữ liệu đầu vào
+    const customerObj = customers.find(c => c.id === cust);
+
     if (!cust) {
         alert("Vui lòng chọn Khách hàng!");
         return;
@@ -1918,49 +1896,53 @@ function finalSale() {
         return;
     }
 
-    // Tạo thời gian hiện tại
     const now = new Date();
     const currentTime = now.getHours().toString().padStart(2, '0') + ':' + 
                        now.getMinutes().toString().padStart(2, '0');
 
     const saleId = "SALE-" + Date.now();
 
-    // Cập nhật kho và ghi lịch sử cho từng mặt hàng
     salePending.forEach(i => {
         let p = products.find(prod => prod.itemCode === i.itemCode);
         if (p) {
             p.qty -= i.qty;
+
             let totalWithTax = i.preTax + (i.taxVal || 0);
 
             history.push({
-                historyId: Date.now().toString() + Math.random().toString(16).slice(2),
+                historyId: saleId + "-" + i.itemCode + "-" + Date.now(),
                 ...i,
                 date: date,
-                time: currentTime,                    // ← Đã sửa đúng
+                time: currentTime,
+
+                // 🔥 CHUẨN
                 partner: cust,
+                partnerId: customerObj ? customerObj.id : null,
+
                 type: 'XUẤT',
                 amount: totalWithTax,
-                historyId: saleId + "-ITEM"
             });
         }
     });
 
-    // Ghi lịch sử thanh toán
+    // Thanh toán
     history.push({
-        historyId: Date.now().toString() + Math.random().toString(16).slice(2),
+        historyId: saleId + "-PAY-" + Date.now(),
         date: date,
-        time: currentTime,                            // ← Đã sửa đúng
+        time: currentTime,
+
+        // 🔥 CHUẨN
         partner: cust,
+        partnerId: customerObj ? customerObj.id : null,
+
         type: 'THU_NO',
         name: `Thanh toán đơn hàng (${method})`,
         amount: paid,
         method: method,
         isPayment: true,
         invoiceNo: (salePending[0] ? salePending[0].invoiceNo + "-TT" : "TT-" + Date.now()),
-        historyId: saleId + "-PAY"
     });
 
-    // Thay nút xác nhận bằng nút in + đóng
     const modalActions = document.getElementById("modal-actions-sale");
     if (modalActions) {
         modalActions.innerHTML = `
@@ -2098,12 +2080,65 @@ function buildFastCache() {
     return cache;
 }
 
+function calcDebt(partner) {
+    let total = 0;
+
+    history.forEach(h => {
+        if (h.isCancelled) return;
+        if (h.partner !== partner) return;
+
+        if (h.type === 'XUẤT') total += h.amount;
+        else if (h.type === 'NHẬP') total += h.amount;
+        else if (h.isPayment) total -= h.amount;
+    });
+
+    return total;
+}
+
+function buildDebtCache() {
+    const map = {};
+
+    history.forEach(h => {
+        if (h.isCancelled) return;
+        if (!h.partnerId) return;
+
+        // 🔥 KEY CHUẨN: ưu tiên ID, fallback tên
+        const key = h.partnerId;
+
+        if (!map[key]) {
+            map[key] = {
+                customer: 0,
+                supplier: 0
+            };
+        }
+
+        const amt = Number(h.amount) || 0;
+
+        // ===== KHÁCH HÀNG =====
+        if (h.type === 'XUẤT') {
+            map[key].customer += amt;
+        }
+
+        // ===== NHÀ CUNG CẤP =====
+        else if (h.type === 'NHẬP') {
+            map[key].supplier += amt;
+        }
+
+        // ===== THANH TOÁN =====
+        else if (h.isPayment) {
+            if (h.type === 'THU_NO') {
+                map[key].customer -= amt;
+            } else if (h.type === 'TRA_NO') {
+                map[key].supplier -= amt;
+            }
+        }
+    });
+
+    return map;
+}
+
 function renderAll() {
     renderInventory();
-    
-    const fastCache = buildFastCache();
-
-    const partnerDebtMap = buildPartnerDebtMap();
 
     const debtCache = buildDebtCache();
 
@@ -2114,12 +2149,17 @@ function renderAll() {
         
         return `
             <option value="${p.itemCode}">
-                ${p.itemCode} - ${p.name} | Kho: ${fmt.format(p.qty)} ${p.unit} | Thuế: ${p.tax}%
+                ${p.itemCode} - ${p.name} | Tồn: ${fmt.format(p.qty)} ${p.unit} | Thuế: ${p.tax}%
             </option>
         `;
     }).join('');
-    document.getElementById("saleCustomer").innerHTML = customers.map(c => `<option>${c.name}</option>`).join('');
-    document.getElementById("supplierSelect").innerHTML = suppliers.map(s => `<option>${s.name}</option>`).join('');
+    document.getElementById("saleCustomer").innerHTML = customers.map(c => 
+        `<option value="${c.id}">${c.id} - ${c.name}</option>`
+    ).join('');
+
+    document.getElementById("supplierSelect").innerHTML = suppliers.map(s => 
+        `<option value="${s.id}">${s.id} - ${s.name}</option>`
+    ).join('');
     
     let fromDate = document.getElementById("reportFrom").value;
     let toDate = document.getElementById("reportTo").value;
@@ -2164,8 +2204,10 @@ function renderAll() {
         }
 
         // Gom theo đối tác (chuẩn bị cho phần dưới)
-        if (!partnerMap[h.partner]) {
-            partnerMap[h.partner] = {
+        const key = h.partnerId || h.partner;
+
+        if (!partnerMap[key]) {
+            partnerMap[key] = {
                 debt: 0
             };
         }
@@ -2174,7 +2216,7 @@ function renderAll() {
             ? amt 
             : (h.isPayment ? -amt : 0);
 
-        partnerMap[h.partner].debt += change;
+        partnerMap[key].debt += change;
     });
     
     document.getElementById("repSumSale").innerText = fmt.format(totalSale);
@@ -2244,13 +2286,19 @@ function renderAll() {
             let p = partnerObj.name;
             // Tính nợ phải loại bỏ !h.isCancelled
             let nDau = history.filter(h => 
-                h.partner === p &&
+                (h.partnerId || h.partner) === (partnerObj.id || partnerObj.name) &&
                 new Date(h.date) < new Date(fromDate) &&
                 !h.isCancelled
             ).reduce((s,i) => s + (i.isPayment ? -i.amount : i.amount), 0);
-            let nPhatSinh = filtered.filter(h => h.partner === p && !h.isPayment).reduce((s,i) => s + i.amount, 0);
-            let nDaTra = filtered.filter(h => h.partner === p && h.isPayment).reduce((s,i) => s + i.amount, 0);
-            body.innerHTML += `<tr onclick="viewPartnerLog('${p}')" style="cursor:pointer"><td>${p}</td><td>${fmt.format(nDau)}</td><td style="color:#e74c3c; font-weight:bold">+${fmt.format(nPhatSinh)}</td><td style="color:#27ae60; font-weight:bold">-${fmt.format(nDaTra)}</td><td style="font-weight:bold; color:${(nDau + nPhatSinh - nDaTra) >= 0 ? '#b30000' : '#27ae60'}">${fmt.format(nDau + nPhatSinh - nDaTra)}</td></tr>`;
+            let nPhatSinh = filtered.filter(h => 
+                (h.partnerId || h.partner) === (partnerObj.id || partnerObj.name) && 
+                !h.isPayment
+            ).reduce((s,i) => s + i.amount, 0);
+            let nDaTra = filtered.filter(h => 
+                (h.partnerId || h.partner) === (partnerObj.id || partnerObj.name) && 
+                h.isPayment
+            ).reduce((s,i) => s + i.amount, 0);
+            body.innerHTML += `<tr onclick="viewPartnerLog('${partnerObj.id}')" style="cursor:pointer"><td>${p}</td><td>${fmt.format(nDau)}</td><td style="color:#e74c3c; font-weight:bold">+${fmt.format(nPhatSinh)}</td><td style="color:#27ae60; font-weight:bold">-${fmt.format(nDaTra)}</td><td style="font-weight:bold; color:${(nDau + nPhatSinh - nDaTra) >= 0 ? '#b30000' : '#27ae60'}">${fmt.format(nDau + nPhatSinh - nDaTra)}</td></tr>`;
         });
     } else if(type === 'tonkho') {
         head.innerHTML = `<tr><th>Mã Item</th><th>Tên sản phẩm</th><th>ĐVT</th><th>SL Tồn</th><th>Giá vốn</th><th>Giá trị tồn</th></tr>`;
@@ -2261,10 +2309,34 @@ function renderAll() {
     }
 
     // HIỂN THỊ DANH SÁCH KHÁCH HÀNG (CARD)
+    // ===== TÍNH TỔNG NỢ KHÁCH =====
+    let totalCustomerDebt = 0;
+    customers.forEach(c => {
+        let key = c.id || c.name;
+        totalCustomerDebt += (debtCache[key]?.customer) || 0;
+    });
     let custSearchInput = document.getElementById("searchCustInput").value.trim();
     let custKeyNoTone = removeVietnameseTone(custSearchInput);
 
-    document.getElementById("customerGrid").innerHTML = customers
+    document.getElementById("customerGrid").innerHTML = `
+
+    <div style="
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg,#28a745,#20c997);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        font-weight:bold;
+    ">
+        <span>💰 TỔNG NỢ PHẢI THU KHÁCH HÀNG</span>
+        <span style="font-size:20px">${fmt.format(totalCustomerDebt)} đ</span>
+    </div>
+
+    ` + customers
         .filter(c => {
             let nameNoTone = removeVietnameseTone(c.name);
             return custKeyNoTone === "" || nameNoTone.includes(custKeyNoTone) || 
@@ -2272,13 +2344,12 @@ function renderAll() {
         })
         .map(c => {
             // TÍNH CÔNG NỢ THỰC TẾ (TRỪ ĐỒ HỦY)
-            let debt = debtCache[c.name]?.customer || 0;
+            let key = c.id || c.name;
+            let debt = (debtCache[key]?.customer) || 0;
 
             return `
-            <div class="partner-item-card" onclick="viewPartnerLog('${c.name}')">
+            <div class="partner-item-card" onclick="viewPartnerLog('${c.id}')">
                 <div class="partner-name-box">👤 ${c.name} 
-                    <button class="btn-blue" style="font-size:11px; padding:3px 8px; margin-left:8px;" 
-                            onclick="event.stopPropagation(); editPartnerFullInfo('${c.name}', false)">✏️</button>
                 </div>
                 <div class="partner-debt-box">
                     <div class="partner-debt-label">Nợ khách hàng</div>
@@ -2289,10 +2360,34 @@ function renderAll() {
         }).join('');
 
     // HIỂN THỊ DANH SÁCH NCC (CARD)
+    // ===== TÍNH TỔNG NỢ NCC =====
+    let totalSupplierDebt = 0;
+    suppliers.forEach(s => {
+        let key = s.id || s.name;
+        totalSupplierDebt += (debtCache[key]?.supplier) || 0;
+    });
     let suppSearchInput = document.getElementById("searchSuppInput").value.trim();
     let suppKeyNoTone = removeVietnameseTone(suppSearchInput);
 
-    document.getElementById("supplierGrid").innerHTML = suppliers
+    document.getElementById("supplierGrid").innerHTML = `
+
+    <div style="
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg,#e67e22,#d35400);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        font-weight:bold;
+    ">
+        <span>💸 TỔNG NỢ PHẢI TRẢ NCC</span>
+        <span style="font-size:20px">${fmt.format(totalSupplierDebt)} đ</span>
+    </div>
+
+    ` + suppliers
         .filter(s => {
             let nameNoTone = removeVietnameseTone(s.name);
             return suppKeyNoTone === "" || nameNoTone.includes(suppKeyNoTone) || 
@@ -2300,13 +2395,12 @@ function renderAll() {
         })
         .map(s => {
             // TÍNH CÔNG NỢ THỰC TẾ (TRỪ ĐỒ HỦY)
-            let debt = debtCache[s.name]?.supplier || 0;
+            let key = s.id || s.name;
+            let debt = (debtCache[key]?.supplier) || 0;
 
             return `
-            <div class="partner-item-card" onclick="viewPartnerLog('${s.name}')" style="border-left: 4px solid #b30000;">
+            <div class="partner-item-card" onclick="viewPartnerLog('${s.id}')" style="border-left: 4px solid #b30000;">
                 <div class="partner-name-box">🚚 ${s.name} 
-                    <button class="btn-blue" style="font-size:11px; padding:3px 8px; margin-left:8px;" 
-                            onclick="event.stopPropagation(); editPartnerFullInfo('${s.name}', true)">✏️</button>
                 </div>
                 <div class="partner-debt-box" style="background: #fffafa;">
                     <div class="partner-debt-label">Tổng nợ cần trả</div>
@@ -2401,7 +2495,6 @@ function showNewProductModal() {
     let html = `<div class="modal-header">THÊM MẶT HÀNG MỚI</div>
     <div class="modal-body">
         <div class="edit-form-group"><label>Mã Item:</label><input type="text" id="newPCode" value="${defaultCode}" readonly style="background:#f0f0f0"></div>
-        <div class="edit-form-group"><label>Tên hàng:</label><input type="text" id="newPName" autofocus></div>
         <div class="edit-form-group">
             <label>Nhóm hàng:</label>
             <div style="flex:1; display:flex; gap:5px;">
@@ -2409,7 +2502,8 @@ function showNewProductModal() {
                 <button onclick="addNewCategory()" class="btn-blue" style="padding:5px">+ NHÓM MỚI</button>
             </div>
         </div>
-        <div class="edit-form-group"><label>ĐVT:</label><input type="text" id="newPUnit" value="tấm"></div>
+        <div class="edit-form-group"><label>Tên hàng:</label><input type="text" id="newPName" autofocus></div>
+        <div class="edit-form-group"><label>ĐVT:</label><input type="text" id="newPUnit" value="Kg"></div>
         <div class="edit-form-group"><label>Thuế %:</label><input type="number" id="newPTax" value="10"></div>
     </div>
     <div class="modal-footer">
@@ -2592,7 +2686,7 @@ function submitNewProduct() {
 
     setTimeout(() => {
         closeModal();
-        if (typeof renderInventory === "function") renderInventory();
+        if (typeof renderAll === "function") renderAll();
     }, 1200);
 }
 
@@ -2619,10 +2713,41 @@ function showProductError(msg) {
     document.head.appendChild(style);
 }
 
+function generateCustomerId() {
+    let max = 0;
+    customers.forEach(c => {
+        if (c.id && c.id.startsWith("KH")) {
+            let num = parseInt(c.id.replace("KH", ""));
+            if (num > max) max = num;
+        }
+    });
+    return "KH" + String(max + 1).padStart(5, "0");
+}
+
+function generateSupplierId() {
+    let max = 0;
+    suppliers.forEach(s => {
+        if (s.id && s.id.startsWith("NCC")) {
+            let num = parseInt(s.id.replace("NCC", ""));
+            if (num > max) max = num;
+        }
+    });
+    return "NCC" + String(max + 1).padStart(5, "0");
+}
+
 function addCustomer() {
+
+    const newId = generateCustomerId();
+
     let html = `
     <div class="modal-header" style="background:#007bff">KHAI BÁO KHÁCH HÀNG MỚI</div>
     <div class="modal-body">
+
+        <div class="edit-form-group">
+            <label>Mã khách hàng:</label>
+            <input type="text" id="newCustCode" value="${newId}" readonly style="background:#eee; font-weight:bold;">
+        </div>
+
         <div class="edit-form-group"><label>Tên khách hàng:</label><input type="text" id="newCustName" autofocus placeholder="Ví dụ: Anh A"></div>
         <div class="edit-form-group"><label>Địa chỉ:</label><input type="text" id="newCustAddress" placeholder="Số nhà, đường, phường/xã..."></div>
         <div class="edit-form-group"><label>Điện thoại:</label><input type="text" id="newCustPhone" placeholder="090x xxx xxx"></div>
@@ -2643,11 +2768,22 @@ function saveNewCustomer() {
     let name = document.getElementById("newCustName").value.trim();
     if (!name) return alert("Vui lòng nhập tên khách hàng!");
     
-    if (customers.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-        return alert("Khách hàng tên này đã tồn tại!");
+    // 🔔 Cảnh báo trùng tên (KHÔNG CHẶN)
+    const isDuplicateName = customers.some(c => 
+        c.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (isDuplicateName) {
+        if (!confirm("⚠️ Đã có khách hàng trùng tên!\nBạn có chắc muốn tạo thêm không?")) {
+            return;
+        }
     }
     
+    const id = document.getElementById("newCustCode").value;
+
     customers.push({
+        id: id,
+
         name: name,
         address: document.getElementById("newCustAddress").value.trim(),
         phone: document.getElementById("newCustPhone").value.trim(),
@@ -2661,9 +2797,18 @@ function saveNewCustomer() {
 }
 
 function addSupplier() {
+
+    const newId = generateSupplierId();
+
     let html = `
     <div class="modal-header" style="background:#b30000">KHÁI BÁO NHÀ CUNG CẤP MỚI</div>
     <div class="modal-body">
+
+        <div class="edit-form-group">
+            <label>Mã NCC:</label>
+            <input type="text" id="newSuppCode" value="${newId}" readonly style="background:#eee; font-weight:bold;">
+        </div>
+
         <div class="edit-form-group"><label>Tên nhà cung cấp:</label><input type="text" id="newSuppName" autofocus placeholder="Ví dụ: Công ty Thép XYZ"></div>
         <div class="edit-form-group"><label>Địa chỉ:</label><input type="text" id="newSuppAddress" placeholder="Số nhà, đường, phường/xã..."></div>
         <div class="edit-form-group"><label>Điện thoại:</label><input type="text" id="newSuppPhone" placeholder="090x xxx xxx"></div>
@@ -2683,12 +2828,22 @@ function addSupplier() {
 function saveNewSupplier() {
     let name = document.getElementById("newSuppName").value.trim();
     if (!name) return alert("Vui lòng nhập tên nhà cung cấp!");
-    
-    if (suppliers.some(s => s.name.toLowerCase() === name.toLowerCase())) {
-        return alert("Nhà cung cấp tên này đã tồn tại!");
-    }
-    
+
+    // 🔔 Cảnh báo trùng tên (KHÔNG CHẶN)
+    const isDuplicateName = suppliers.some(c => 
+        c.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (isDuplicateName) {
+        if (!confirm("⚠️ Đã có NCC trùng tên!\nBạn có chắc muốn tạo thêm không?")) {
+            return;
+        }
+    }    
+
+    const id = document.getElementById("newSuppCode").value;
+
     suppliers.push({
+        id: id,
         name: name,
         address: document.getElementById("newSuppAddress").value.trim(),
         phone: document.getElementById("newSuppPhone").value.trim(),
@@ -2760,7 +2915,7 @@ function handleExport() {
     XLSX.writeFile(wb, fileName);
 }
 
-function deleteHistoryItem(historyId, isPartnerView = false, partnerName = '') {
+function deleteHistoryItem(historyId, isPartnerView = false, partnerId = null) {
 
     // ❌ CHẶN LUÔN nếu không có ID
     if (!historyId || typeof historyId !== "string") {
@@ -2807,8 +2962,8 @@ function deleteHistoryItem(historyId, isPartnerView = false, partnerName = '') {
     }
 
     // 4. Reload UI
-    if (isPartnerView && partnerName) {
-        viewPartnerLog(partnerName);
+    if (isPartnerView && partnerId) {
+        viewPartnerLog(partnerId);
     } else {
         renderAll();
     }
@@ -2860,6 +3015,7 @@ function recalculateAllProducts() {
 }
 
 function renderCustomers() {
+    const debtCache = buildDebtCache();
     const grid = document.getElementById("customerGrid");
     const search = document.getElementById("searchCustInput").value.toLowerCase();
     grid.innerHTML = "";
@@ -2872,13 +3028,13 @@ function renderCustomers() {
 
     // Bước 1: Vòng lặp tính toán nợ cho từng người và cộng dồn vào tổng
     filtered.forEach(c => {
-        let debt = calcDebt(c.name, 'customer');
+        let debt = debtCache[c.id]?.customer || 0;
 
         totalAllReceivable += debt; // Cộng dồn nợ của người này vào tổng chung
 
         let card = document.createElement("div");
         card.className = "partner-item-card";
-        card.onclick = () => viewPartnerLog(c.name);
+        card.onclick = () => viewPartnerLog(c.id);
         card.innerHTML = `
             <div class="partner-name-box">👤 ${c.name}</div>
             <div style="font-size:12px; color:#666; margin-bottom:10px;">
@@ -2916,6 +3072,7 @@ function renderCustomers() {
 }
 
 function renderSuppliers() {
+    const debtCache = buildDebtCache();
     const grid = document.getElementById("supplierGrid");
     const search = document.getElementById("searchSuppInput").value.toLowerCase();
     grid.innerHTML = "";
@@ -2926,13 +3083,13 @@ function renderSuppliers() {
     let filtered = suppliers.filter(s => s.name.toLowerCase().includes(search));
 
     filtered.forEach(s => {
-        let debt = calcDebt(s.name, 'supplier');
+        let debt = debtCache[s.id]?.supplier || 0;
 
         totalAllPayable += debt; // Cộng dồn
 
         let card = document.createElement("div");
         card.className = "partner-item-card";
-        card.onclick = () => viewPartnerLog(s.name);
+        card.onclick = () => viewPartnerLog(s.id);
         card.innerHTML = `
             <div class="partner-name-box">🚚 ${s.name}</div>
             <div style="font-size:12px; color:#666; margin-bottom:10px;">
@@ -2968,23 +3125,47 @@ function renderSuppliers() {
     grid.prepend(totalBar);
 }
 
-// 1. Hàm hiển thị bảng xác nhận xóa dữ liệu
 function showSecureClearModal() {
     let html = `
-    <div class="modal-header" style="background:#dc3545; color:white;">⚠️ CẢNH BÁO NGUY HIỂM</div>
-    <div class="modal-body">
-        <div class="danger-box">
-            <b>HÀNH ĐỘNG NÀY KHÔNG THỂ PHỤC HỒI!</b><br>
-            Tất cả dữ liệu về Sản phẩm, Khách hàng, Nhà cung cấp, Lịch sử kho và Sổ quỹ sẽ bị xóa sạch hoàn toàn.
-        </div>
-        <p>Vui lòng nhập mật khẩu xác nhận để thực hiện:</p>
-        <input type="password" id="clearDataPass" placeholder="Nhập mật khẩu..." style="width:100%; padding:10px; border:1px solid #ccc;">
+    <div class="modal-header" style="background:#b30000; color:white;">
+        ⚠️ XÁC NHẬN XÓA TOÀN BỘ DỮ LIỆU
     </div>
+
+    <div class="modal-body">
+        <div style="
+            background:#fff3cd;
+            border-left:5px solid #ff0000;
+            padding:12px;
+            margin-bottom:15px;
+            font-weight:bold;
+            color:#b30000;
+        ">
+            ⚠️ HÀNH ĐỘNG NÀY KHÔNG THỂ HOÀN TÁC!
+        </div>
+
+        <div style="margin-bottom:10px;">
+            Tất cả dữ liệu sẽ bị xóa vĩnh viễn:
+        </div>
+
+        <ul style="margin-bottom:15px; color:#555;">
+            <li>Sản phẩm</li>
+            <li>Khách hàng</li>
+            <li>Nhà cung cấp</li>
+            <li>Lịch sử giao dịch</li>
+            <li>Sổ quỹ</li>
+        </ul>
+
+        <input type="password" id="clearDataPass" 
+            placeholder="Nhập mật khẩu để xác nhận..."
+            style="width:100%; padding:10px; border:1px solid #ccc;">
+    </div>
+
     <div class="modal-footer">
-        <button class="btn-danger" onclick="confirmClearAllData()">XÁC NHẬN XÓA TẤT CẢ</button>
-        <button onclick="closeModal()">HỦY BỎ</button>
-    </div>`;
-    
+        <button class="btn-danger" onclick="confirmClearAllData()">XÓA SẠCH</button>
+        <button onclick="closeModal()">HỦY</button>
+    </div>
+    `;
+
     document.getElementById("modalContent").innerHTML = html;
     document.getElementById("modalContent").style.maxWidth = "450px";
     document.getElementById("previewModal").style.display = "block";
@@ -2993,15 +3174,38 @@ function showSecureClearModal() {
 // 2. Hàm thực thi việc xóa sạch localStorage
 function confirmClearAllData() {
     let pass = document.getElementById("clearDataPass").value;
-    if (pass === "123456") { // Bạn có thể đổi mật khẩu này theo ý muốn
-        if (confirm("Bạn có chắc chắn 100% muốn xóa sạch toàn bộ dữ liệu không?")) {
-            localStorage.clear();
-            alert("Đã xóa toàn bộ dữ liệu. Trang web sẽ khởi động lại.");
-            location.reload();
-        }
-    } else {
-        alert("Mật khẩu không chính xác!");
+
+    if (pass !== "123456") {
+        alert("❌ Mật khẩu không đúng!");
+        return;
     }
+
+    if (!confirm("⚠️ Bạn chắc chắn muốn xóa toàn bộ dữ liệu?")) return;
+
+    // ✅ 1. XÓA RAM
+    products = [];
+    customers = [];
+    suppliers = [];
+    categories = ['Chưa phân loại'];
+    history = [];
+    cashflow = [];
+
+    // ✅ 2. XÓA LOCALSTORAGE (CHUẨN THEO KEY)
+    localStorage.removeItem("products");
+    localStorage.removeItem("customers");
+    localStorage.removeItem("suppliers");
+    localStorage.removeItem("categories");
+    localStorage.removeItem("history");
+    localStorage.removeItem("cashflow");
+
+    // (Nếu bạn có key khác thì thêm vào đây)
+
+    // ✅ 3. LƯU LẠI TRẠNG THÁI RỖNG
+    if (typeof save === "function") save();
+
+    alert("✅ Đã xóa sạch toàn bộ dữ liệu!");
+
+    location.reload();
 }
 
 // ===== DÁN 2 HÀM CHUYỂN QUỸ Ở ĐÂY =====
@@ -3097,13 +3301,116 @@ function submitTransferFund(date, time) {
     renderCashFlow();
 }
 
+// --- LOGIC CHO TAB TỔNG QUAN ---
+
+// 1. Hàm xử lý khi thay đổi Select Box chọn thời gian
+function handleOVTimeChange(val) {
+    const customDiv = document.getElementById('ovCustomDate');
+    if (customDiv) {
+        customDiv.style.display = (val === 'custom' ? 'flex' : 'none');
+    }
+    renderOverview(); // Chạy lại tính toán mỗi khi đổi mốc thời gian
+}
+
+// 2. Hàm ẩn/hiện số tiền Lãi Gộp (Bảo mật)
+function toggleProfit() {
+    const p = document.getElementById('ovProfit');
+    if (p) {
+        // Nếu đang mờ thì hiện, đang hiện thì mờ
+        p.style.filter = (p.style.filter === 'none' ? 'blur(8px)' : 'none');
+    }
+}
+
+// 3. Hàm tính toán và hiển thị dữ liệu lên các ô (Card)
+function renderOverview() {
+    const range = document.getElementById('ovTimeRange').value;
+    let from, to;
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+
+    // Xử lý xác định khoảng ngày để lọc History
+    if (range === 'today') {
+        from = to = todayStr;
+    } else if (range === 'yesterday') {
+        let y = new Date(); 
+        y.setDate(now.getDate() - 1);
+        from = to = y.toISOString().split('T')[0];
+    } else if (range === 'thisMonth') {
+        from = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+        to = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+    } else if (range === 'lastMonth') {
+        from = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString().split('T')[0];
+        to = new Date(now.getFullYear(), now.getMonth(), 0).toISOString().split('T')[0];
+    } else if (range === 'thisYear') {
+        from = now.getFullYear() + "-01-01";
+        to = now.getFullYear() + "-12-31";
+    } else if (range === 'lastYear') {
+        from = (now.getFullYear() - 1) + "-01-01";
+        to = (now.getFullYear() - 1) + "-12-31";
+    } else if (range === 'custom') {
+        from = document.getElementById('ovFrom').value;
+        to = document.getElementById('ovTo').value;
+    }
+
+    if (!from || !to) return;
+
+    // --- BẮT ĐẦU TÍNH TOÁN DỮ LIỆU ---
+    
+    // A. Tính Doanh thu & Giá vốn (Chỉ lọc trong khoảng thời gian đã chọn)
+    let totalRev = 0; // Doanh thu
+    let totalCost = 0; // Giá vốn
+    history.forEach(h => {
+        if (!h.isCancelled && h.date >= from && h.date <= to) {
+            if (h.type === 'XUẤT') {
+                totalRev += (Number(h.qty) * Number(h.price));
+                // Nếu chưa có costPrice thì lấy tạm p.avg hiện tại để tính
+                let costPrice = Number(h.costPrice);
+                if (!costPrice) {
+                    let p = products.find(prod => prod.itemCode === h.itemCode);
+                    costPrice = p ? p.avg : 0;
+                }
+                totalCost += (Number(h.qty) * costPrice);
+            }
+        }
+    });
+
+    // B. Tính Tồn kho (Đây là giá trị tài sản hiện tại - không lọc theo ngày)
+    let invValue = products.reduce((sum, p) => {
+        let preTax = p.qty * p.avg;
+        return sum + (preTax * (1 + (p.tax || 0) / 100));
+    }, 0);
+
+    // C. Tính Công nợ (Dựa trên hàm calcDebt bạn đã có)
+    let totalReceivable = 0; // Khách nợ mình
+    customers.forEach(c => {
+        totalReceivable += calcDebt(c.name, 'customer');
+    });
+
+    let totalPayable = 0; // Mình nợ NCC
+    suppliers.forEach(s => {
+        totalPayable += calcDebt(s.name, 'supplier');
+    });
+
+    // --- CẬP NHẬT LÊN GIAO DIỆN ---
+    document.getElementById('ovRevenue').innerText = fmt.format(totalRev) + " đ";
+    document.getElementById('ovCost').innerText = fmt.format(totalCost) + " đ";
+    document.getElementById('ovProfit').innerText = fmt.format(totalRev - totalCost) + " đ";
+    document.getElementById('ovInventoryValue').innerText = fmt.format(invValue) + " đ";
+    document.getElementById('ovReceivable').innerText = fmt.format(totalReceivable) + " đ";
+    document.getElementById('ovPayable').innerText = fmt.format(totalPayable) + " đ";
+}
+
 function autoBackup() {
-    // Chỉ chạy backup tự động nếu đã qua 5 phút kể từ lần cuối
     const lastBackup = localStorage.getItem("lastAutoBackup") || 0;
     const now = Date.now();
     
-    if (now - lastBackup > 5 * 60 * 1000) {   // 5 phút
-        syncToGoogle();
+    if (now - lastBackup > 5 * 60 * 1000) {
+        // ❌ TẮT GOOGLE DRIVE
+        // syncToGoogle();
+
+        // ✅ chỉ backup local (nếu có)
+        console.log("Auto backup local OK");
+
         localStorage.setItem("lastAutoBackup", now);
     }
 }
@@ -3114,16 +3421,19 @@ upgradeHistoryId();
 initDB();
 renderAll();
 
-setInterval(() => {
-    autoBackup();
-}, 1000 * 60 * 5);
-
 ["cfFrom", "cfTo"].forEach(id => {
     if (document.getElementById(id) && !document.getElementById(id).value) {
         document.getElementById(id).value = new Date().toISOString().split('T')[0];
     }
 });
-	
+
+// ===== AUTO SAVE CHỐNG MẤT DỮ LIỆU =====
+
+// Tự động save mỗi 5 giây
+setInterval(() => {
+    if (typeof save === "function") save();
+}, 1000 * 60 * 5);
+
 // Khi tắt web vẫn lưu
 window.addEventListener("beforeunload", function () {
     if (typeof save === "function") save();
